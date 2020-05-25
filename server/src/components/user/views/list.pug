@@ -1,0 +1,30 @@
+extends ../../global/views/layouts/main.pug
+
+block content
+  - let counter = 0;
+  h2 Користувачі
+  a(href="/admin/user/add") Створити нового
+  - if (data)
+    table
+      thead
+        tr
+          th №п/п
+          th Прізвище
+          th Ім'я
+          th По батькові
+          th Телефон
+          th Дії
+      tbody
+    each item in data
+      tr
+        td= ++counter
+        td= item.f_name
+        td= item.s_name
+        td= item.th_name
+        td= item.phone
+        td
+          form(action=`admin/user/edit/${item.id}` method="GET") 
+            button(type="submit") Редагувати
+          form(action=`admin/user/delete/${item.id}` method="POST") 
+            button(type="submit") Видалити
+

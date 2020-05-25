@@ -15,8 +15,9 @@ module.exports = (app) => {
     res.send("Hello world!");
   });
   app.use("/auth", [auth_routes]);
+  app.use("/admin", [user_routes]);
   app.get("/admin",authenticationMiddleware(), mainController.getMainPage);
-  app.use("/admin", authenticationMiddleware(), [user_routes]);
+  
   //app.use("/admin", [auth_routes]);
   app.get("/error", (req, res) => {
     res.send("Error");

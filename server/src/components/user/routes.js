@@ -1,11 +1,21 @@
 const router = require("express").Router();
 const controller = require("./controller");
+const authenticationMiddleware = require("../../authentication/middleware");
 
-const routeGroup = 'user'
+const routeGroup = "user";
 
-router.get(`${routeGroup}/list`, controller.getList);
-router.route(`${routeGroup}/edit:id`).get(controller.getEdit).post(controller.postEdit);
-router.route(`${routeGroup}/delete:id`).get(controller.getDelete).post(controller.postDelete);
-router.route(`${routeGroup}/add`).get(controller.getAdd).post(controller.postAdd);
+router.get(`/${routeGroup}/list`,authenticationMiddleware(), controller.getList);
+router
+  .route(`${routeGroup}/edit:id`)
+  .get(authenticationMiddleware(), controller.getEdit)
+  .post(authenticationMiddleware(), controller.postEdit);
+router
+  .route(`${routeGroup}/delete:id`)
+  .get(authenticationMiddleware(), controller.getDelete)
+  .post(authenticationMiddleware(), controller.postDelete);
+router
+  .route(`${routeGroup}/add`)
+  .get(authenticationMiddleware(), controller.getAdd)
+  .post(authenticationMiddleware(), controller.postAdd);
 
 module.exports = router;
