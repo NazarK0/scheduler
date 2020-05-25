@@ -1,8 +1,9 @@
 style
+  include /styles/header.min.css
 
 header#header.header
   a(href="/admin")
-    img.logo(src="#" alt="logo")
-  include ./partials/menu.pug
+    img.logo(src="/img/Logo.png" alt="logo")
+  include ./partials/menu/menu.pug
   form(action="/auth/logout" method="POST")
     button(type="submit") Вихід

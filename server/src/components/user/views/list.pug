@@ -1,4 +1,4 @@
-extends ../../global/views/layouts/main.pug
+extends ../../../global/views/layouts/main.pug
 
 block content
   - let counter = 0;
@@ -23,8 +23,9 @@ block content
         td= item.th_name
         td= item.phone
         td
-          form(action=`admin/user/edit/${item.id}` method="GET") 
+          form(action=`/admin/user/edit/${item.id}` method="GET") 
             button(type="submit") Редагувати
-          form(action=`admin/user/delete/${item.id}` method="POST") 
-            button(type="submit") Видалити
+          //form(action=`/admin/user/delete/${item.id}` method="POST") 
+          button(type="submit" class="open-modal-btn") Видалити
+  include ../../../global/views/layouts/confirm.pug
 

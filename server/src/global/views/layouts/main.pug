@@ -1,7 +1,47 @@
 doctype html
 html(lang="uk")
   head
-    block headscripts
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(http-equiv="X-UA-Compatible" content="ie=edge")
+    title Адмін панель
+    meta(name="description" content="Адмін панель для Розкладу Занять")
+    meta(name="keywords" content="Розклад, адмін")
+    //favicons
+    link(rel="icon" type="image/png" sizes="16x16" href="/img/fvico/favicon-16x16.png")
+    link(rel="icon" type="image/png" sizes="32x32" href="/img/fvico/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="48x48" href="/img/fvico/favicon-48x48.png")
+    link(rel="icon" type="image/png" sizes="64x64" href="/img/fvico/favicon-64x64.png")
+    link(rel="icon" type="image/png" sizes="96x96" href="/img/fvico/favicon-96x96.png")
+    //Apple Touch icon
+    link(rel="apple-touch-icon" sizes="57x57" href="/img/fvico/apple-touch-icon-57x57.png")
+    link(rel="apple-touch-icon" sizes="60x60" href="/img/fvico/apple-touch-icon-60x60.png")
+    link(rel="apple-touch-icon" sizes="72x72" href="/img/fvico/apple-touch-icon-72x72.png")
+    link(rel="apple-touch-icon" sizes="76x76" href="/img/fvico/apple-touch-icon-76x76.png")
+    link(rel="apple-touch-icon" sizes="114x114" href="/img/fvico/apple-touch-icon-114x114.png")
+    link(rel="apple-touch-icon" sizes="120x120" href="/img/fvico/apple-touch-icon-120x120.png")
+    link(rel="apple-touch-icon" sizes="144x144" href="/img/fvico/apple-touch-icon-144x144.png")
+    link(rel="apple-touch-icon" sizes="152x152" href="/img/fvico/apple-touch-icon-152x152.png")
+    link(rel="apple-touch-icon" sizes="180x180" href="/img/fvico/apple-touch-icon-180x180.png")
+    //macOS Safari svg
+    link(rel="mask-icon" href="/img/fvico/safari-pinned-tab.svg" color="#5bbad5")
+    //Android Chrome
+    link(rel="manifest" href="/img/fvico/manifest.json")
+    link(rel="icon" type="image/png" sizes="192x192" href="/img/fvico/android-chrome-192x192.png")
+    //Win ^8
+    meta(name="msapplication-TileColor" content="#da532c")
+    meta(name="msapplication-TileImage" content="/img/fvico/mstile-144x144.png")
+    meta(name="msapplication-config" content="/img/fvico/browserconfig.xml")
+    meta(name="theme-color" content="#ffffff")
+    //old IE
+    link(rel="shortcut icon" href="/img/fvico/favicon.ico" type="image/x-icon")
+    //OG tags
+    meta(property="og:title" content="Адмін панель")
+    meta(property="og:description" content="Адмін панель для Розкладу Занять")
+    meta(property="og:type" content="website")
+    meta(property="og:url" content="#")
+    meta(property="og:image" content="/img/title.jpg")
+  block headscripts
   body
     include ../partials/header/header.pug
     block content

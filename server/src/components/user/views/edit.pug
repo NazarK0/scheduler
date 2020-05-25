@@ -1,4 +1,23 @@
-extends ../../global/views/layouts/main.pug
+extends ../../../global/views/layouts/main.pug
 
 block content
-    form(action="", method="post")
+  - const form_action = act === "edit"? `edit/${id}` : act === "add" ? "add": null;
+  form(action=`admin/user/${form_action}`, method="post")
+    div
+      label(for="f_name") Прізвище
+      input(id="f_name" type="text" value=f_name required)
+    div
+      label(for="s_name") Ім'я
+      input(id="s_name" type="text" value=s_name required)
+    div
+      label(for="th_name") По батькові
+      input(id="th_name" type="text" value=th_name required)
+    div
+      label(for="phone") Телефон
+      input(id="phone" type="phone" value=phone required)
+    div
+      label(for="email") e-mail
+      input(id="email" type="email" value=email required)
+    button(type="submit") Зберегти
+  - if (act === "edit")
+    a(href=`/admin/user/change-password/${id}`) Змінити пароль
