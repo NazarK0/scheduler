@@ -1,0 +1,26 @@
+extends ../../../global/views/layouts/main.pug
+
+block content
+  h2 Розклад
+  - if (data)
+    each label,index in labels
+      li
+        a(href='/admin/sp/schedule/show/'+index)=label
+    table
+      thead
+        tr
+          th Група
+          th Пара
+          th Кафедра
+          th Дисципліна
+          th Заняття
+          th Викладачі
+      tbody
+        each item in data
+          tr
+            td= item.group
+            td= item.couple
+            td= item.cafedra
+            td= item.subject
+            td= item.lesson_type
+            td= [item.teacher1, item.teacher2, item.teacher1_1, item.teacher2_1]

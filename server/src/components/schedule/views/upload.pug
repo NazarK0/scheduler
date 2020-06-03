@@ -1,0 +1,14 @@
+extends ../../../global/views/partials/modal/modal.pug
+
+block content
+  p Завантажити розклад(.xls, .xlsx)
+  form(action=`/admin/sp/schedule/upload`, method="post" enctype="multipart/form-data")
+    input(type="file" name="upload_schedule" 
+      id="upload_schedule"
+      accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel")
+    button(type="submit" id="upload_submit") Зберегти
+  a(href="#" class="close") Скасувати
+
+block scripts
+  //script(src='./checkfile.js')
+  

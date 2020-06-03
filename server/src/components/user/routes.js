@@ -10,9 +10,7 @@ router
   .get(authenticationMiddleware(), controller.getEdit)
   .post(authenticationMiddleware(), controller.postEdit);
 router
-  .route(`/${routeGroup}/delete/:id`)
-  .get(authenticationMiddleware(), controller.getDelete)
-  .post(authenticationMiddleware(), controller.postDelete);
+  .post(`/${routeGroup}/delete/:id`, authenticationMiddleware(), controller.postDelete);
 router
   .route(`/${routeGroup}/change-password/:id`)
   .get(authenticationMiddleware(), controller.getChangePassword)

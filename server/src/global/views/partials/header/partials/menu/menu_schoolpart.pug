@@ -1,0 +1,30 @@
+style
+  include /styles/menu.min.css
+
+nav.dws-menu
+  ul
+    li
+      a(href="#") Розклад
+      ul
+        li
+          a(href="#" class="open-modal-btn") Завантажити
+        li
+          a(href="/admin/sp/schedule/show") Переглянути
+    li
+      a(href="#") Кафедри
+      ul
+        li
+          a(href="#") Аудиторії
+        li
+          a(href="#") Дисципліни
+    li
+      a(href="/admin/user/list") Користувачі
+    li
+      a(href="#") Налаштування
+      ul
+        li
+          a(href="#") Вигляд
+        li
+          a(href="#") Користувач
+
+  include ../../../../../../components/schedule/views/upload.pug

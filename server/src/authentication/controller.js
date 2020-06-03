@@ -20,8 +20,8 @@ module.exports.getSignUp = async (req, res) => {
 };
 
 module.exports.postSignUp = async (req, res) => {
-  const { f_name, s_name, th_name, phone, email, password, password2 } = req.body;
-  const data = { f_name, s_name, th_name, phone, email };
+  const { name, user_type, cafedra, group, email, password, password2 } = req.body;
+  const data = { name, user_type, cafedra, group, email };
 
   const user = await User.findOne({ "local.email": email });
 
@@ -41,10 +41,10 @@ module.exports.postSignUp = async (req, res) => {
     });
   } else {
     const userData = {
-      f_name,
-      s_name,
-      th_name,
-      phone,
+      name,
+      user_type,
+      cafedra,
+      group,
       local: { email, password },
     };
     await new User(userData).save();
