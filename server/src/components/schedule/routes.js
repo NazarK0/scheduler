@@ -19,4 +19,6 @@ router
   .get(authenticationMiddleware(), controller.getUpload)
   .post(authenticationMiddleware(), urlencodedParser, excel_schedule, controller.postUpload);
 
+  router.get(`/cafedra/${routeGroup}/week`, authenticationMiddleware(), controller.getShowWeek);
+
 module.exports = router;
