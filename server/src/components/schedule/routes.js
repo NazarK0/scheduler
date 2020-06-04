@@ -25,4 +25,6 @@ router
 //  res.status(200);
 // })
 router.post(`/${routeGroup}/:kaf/:date_index`,controller.getSheduleForCafedra);
+  router.get(`/cafedra/${routeGroup}/week`, authenticationMiddleware(), controller.getShowWeek);
+
 module.exports = router;
