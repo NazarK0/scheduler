@@ -1,0 +1,19 @@
+extends ../../../global/views/layouts/main.pug
+
+block content
+  - let counter = 0;
+  h2 Предмети
+  - if (data)
+    each label,index in labels
+      li
+        a(href='/admin/sp/cafedra/subjects/'+index)=label + ' кафедра'
+    table
+      thead
+        tr
+          th №п/п 
+          th Предмети
+      tbody
+        each item in data
+          tr
+            td= ++counter
+            td= item

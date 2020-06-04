@@ -9,23 +9,19 @@ block content
       thead
         tr
           th №п/п
-          th Прізвище
           th Ім'я
-          th По батькові
-          th Телефон
+          th Email
           th Дії
       tbody
-    each item in data
-      tr
-        td= ++counter
-        td= item.f_name
-        td= item.s_name
-        td= item.th_name
-        td= item.phone
-        td
-          form(action=`/admin/user/edit/${item.id}` method="GET") 
-            button(type="submit") Редагувати
-          //form(action=`/admin/user/delete/${item.id}` method="POST") 
-          button(type="submit" class="open-modal-btn") Видалити
+        each item in data
+          tr
+            td= ++counter
+            td= item.name
+            td= item.local.email
+            td
+              form(action=`/admin/user/edit/${item.id}` method="GET") 
+                button(type="submit") Редагувати
+              //form(action=`/admin/user/delete/${item.id}` method="POST") 
+              button(class="open-modal-btn") Видалити
   include ./confirm.pug
 

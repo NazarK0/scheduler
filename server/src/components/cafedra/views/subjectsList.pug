@@ -1,0 +1,17 @@
+extends ../../../global/views/layouts/main.pug
+
+block content
+  - let counter = 0;
+  h2 Дисципліни
+  - if (data)
+    table
+      thead
+        tr
+          th №п/п
+          th Назва
+      tbody
+        each item in data
+          tr
+            td= ++counter
+            td= item.subject
+
