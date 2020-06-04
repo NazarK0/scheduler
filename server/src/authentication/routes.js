@@ -8,7 +8,7 @@ const authenticate = passport.authenticate(["local"], {
 
 const mustAuthenticated = (req, res, next) => {
   if (!req.isAuthenticated()) {
-    return res.status(401).redirect('/auth/signin');
+    return res.status(401).redirect('/signin');
   }
   next();
 };
