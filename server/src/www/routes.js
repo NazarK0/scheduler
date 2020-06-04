@@ -12,7 +12,7 @@ const cafedra_routes = require("../components/cafedra/routes");
 
 module.exports = (app) => {
   app.get("/", (req, res) => {
-    res.send("Hello world!");
+    return res.status(200).redirect('/signin');
   });
   app.use("/", [auth_routes,mobile_routes]);
   app.use("/admin", [user_routes, schedule_routes, cafedra_routes]);
