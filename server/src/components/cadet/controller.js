@@ -2,6 +2,9 @@ const Cadet = require("./model");
 const Schedule = require("../schedule/model");
 const postNewMobile = async (req, res) => {
   const { mobile_key, group } = req.body;
+
+  console.log(mobile_key,'MOB BODY')
+  console.log(group,'MOB BODY')
   new Cadet({ mobile_key, group }).save();
   return res.status(200).send("ok");
 };
@@ -9,7 +12,7 @@ const postNewMobile = async (req, res) => {
 const postMobileLessons = async (req, res) => {
   const { mobile_key } = req.body;
   const group = await Cadet.findOne({ mobile_key }).select({ _id: 0, group: 1 });
-  const schedule = await Schedule.find({ group }).select({
+  const schedule = await Schedule.find( group ).select({
     _id: 0,
     subject: 1,
     lesson_type: 2,

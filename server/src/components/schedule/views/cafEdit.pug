@@ -1,0 +1,37 @@
+extends ../../../global/views/layouts/main.pug
+
+block content
+  h2 Редагувати
+  - if (data)
+    form(action=`/admin/cafedra/schedule/edit/${data._id}` method="post")
+      div
+        label Група*:
+        input(type="text" name="group" value=data.group required)
+      div
+        label Пара*:
+        input(type="text" name="couple" value=data.couple required)
+      div
+        label Аудиторія№1*:
+        input(type="text" name="classroom1" value=data.classroom1 required)
+      div
+        label Аудиторія№2*:
+        input(type="text" name="classroom2" value=data.classroom2 required)
+      div
+        label Дисципліна*:
+        input(type="text" name="subject" value=data.subject required)
+      div
+        label Заняття:
+        input(type="text" name="lesson_type" value=data.lesson_type )
+      div
+        label Викладач №1:
+        input(type="text" name="teacher1" value=data.teacher1 )
+      div
+        label Викладач №2:
+        input(type="text" name="teacher2" value=data.teacher2)
+      div
+        label Викладач №3:
+        input(type="text" name="teacher1_1" value=data.teacher1_1)
+      div
+        label Викладач №4:
+        input(type="text" name="teacher2_1" value=data.teacher2_1)
+      button(type="submit") Зберегти
