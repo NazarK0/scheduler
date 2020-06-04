@@ -4,9 +4,11 @@ const Schedule = require("./model");
 const getScheduleFromExcel = require("../../API/getScheduleFromExcel");
 const addingExcelDataToDb = require("../../API/addingExcelDataToDb");
 const convertExcelToJson = require("convert-excel-to-json");
-
+const {getShedule}=require('../../API/SheduleTable.js/getShedule');
 module.exports.getShow = async (req, res) => {
   const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
+
+  
 
   const dateTimeFormat = new Intl.DateTimeFormat("uk", {
     year: "numeric",
@@ -63,3 +65,13 @@ module.exports.postUpload = async (req, res) => {
   }
   return res.status(200).redirect("../..");
 };
+
+module.exports.getSheduleForCafedra= async(req,res)=>{
+const {
+  kaf,
+  date_index
+
+}=req.params;
+const result=  await getShedule(kaf,date_index);
+res.status(200).json(result);
+}

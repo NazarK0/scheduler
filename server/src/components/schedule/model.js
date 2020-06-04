@@ -46,6 +46,14 @@ const ScheduleSchema = new Schema(
       type: Number,
       default: null,
     },
+    classroom1:{
+      type:String,
+      default:null
+    },
+    classroom2:{
+      type:String,
+      default:null
+    }
   },
  
 );
