@@ -4,6 +4,7 @@ const addExcelDataToDb = async (data) => {
   for(let i=0;i<data.length;i++){
     if( typeof data[i].classroom1!=='number' &&  typeof data[i].classroom1!=='undefined'){
       if(data[i].classroom1!==null && data[i].classroom1.includes("*")){
+        if(data[i].classroom1)
         data[i].classroom1=data[i].classroom1.substring(0,data[i].classroom1.length-1);
       }
      
