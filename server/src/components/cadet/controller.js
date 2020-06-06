@@ -3,8 +3,6 @@ const Schedule = require("../schedule/model");
 const postNewMobile = async (req, res) => {
   const { mobile_key, group } = req.body;
 
-  console.log(mobile_key,'MOB BODY')
-  console.log(group,'MOB BODY')
   new Cadet({ mobile_key, group }).save();
   return res.status(200).send("ok");
 };

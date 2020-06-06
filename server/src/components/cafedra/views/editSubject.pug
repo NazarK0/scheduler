@@ -1,0 +1,10 @@
+extends ../../../global/views/layouts/mainCafedra.pug
+
+block content
+  - const value_subject = data? data : "";
+  h2 Редагувати
+  form(action=`/admin/cafedra/subject/edit/${id}` method="post")
+    div
+      label Дисципліна*:
+      input(type="text" name="new_subject" value=value_subject required)
+    button(type="submit") Зберегти

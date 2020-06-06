@@ -4,33 +4,39 @@ const authenticationMiddleware = require("../../authentication/middleware");
 
 const routeGroup = "cafedra";
 
+router.get(`/sp/${routeGroup}/classrooms`, authenticationMiddleware(), controller.getAllClassrooms);
+router.get(`/sp/${routeGroup}/subjects`, authenticationMiddleware(), controller.getAllSubjects);
 router.get(
-  `/${routeGroup}/:caf_name/classrooms`,
+  `/sp/${routeGroup}/subjects/:id`,
+  authenticationMiddleware(),
+  controller.getAllSubjectsByCafedra
+);
+router.get(
+  `/${routeGroup}/classrooms`,
   authenticationMiddleware(),
   controller.getCafedraClassrooms
 );
-router.get(`/sp/${routeGroup}/classrooms`, authenticationMiddleware(), controller.getAllClassrooms);
-router.get(`/sp/${routeGroup}/classrooms/:id`, authenticationMiddleware(), controller.getAllClassroomsByCafedra);
-router.get(`/sp/${routeGroup}/subjects`, authenticationMiddleware(), controller.getAllSubjects);
-router.get(`/sp/${routeGroup}/subjects/:id`, authenticationMiddleware(), controller.getAllSubjectsByCafedra);
-router.get(`/${routeGroup}/:caf_name/subjects`, authenticationMiddleware(), controller.getSubjects);
 router
-  .route(`/${routeGroup}/edit/:caf_name`)
-  .get(authenticationMiddleware(), controller.getEdit)
-  .post(authenticationMiddleware(), controller.postEdit);
+  .route(`/${routeGroup}/classroom/add`)
+  .get(authenticationMiddleware(), controller.getAddClassroom)
+  .post(authenticationMiddleware(), controller.postAddClassroom);
 router
-  .route(`/${routeGroup}/edit/:caf_name/classroom/:idx`)
+  .route(`/${routeGroup}/classroom/edit/:title`)
   .get(authenticationMiddleware(), controller.getEditClassroom)
   .post(authenticationMiddleware(), controller.postEditClassroom);
-router.post(`/${routeGroup}/delete/:caf_name`, authenticationMiddleware(), controller.postDelete);
 router.post(
-  `/${routeGroup}/:caf_name/delete/classroom/:idx`,
+  `/${routeGroup}/classroom/delete/:title`,
   authenticationMiddleware(),
   controller.postDeleteClassroom
 );
+router.get(
+  `/${routeGroup}/subjects`,
+  authenticationMiddleware(),
+  controller.getCafedraSubjects
+);
 router
-  .route(`/${routeGroup}/:caf_name/add/classroom`)
-  .get(authenticationMiddleware(), controller.getAddClassroom)
-  .post(authenticationMiddleware(), controller.postAddClassroom);
+  .route(`/${routeGroup}/subject/edit/:id`)
+  .get(authenticationMiddleware(), controller.getEditSubject)
+  .post(authenticationMiddleware(), controller.postEditSubject);
 
 module.exports = router;

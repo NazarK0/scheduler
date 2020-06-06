@@ -1,12 +1,9 @@
-extends ../../../global/views/layouts/mainSp.pug
+extends ../../../global/views/layouts/mainCafedra.pug
 
 block content
   - let counter = 0;
   h2 Предмети
   - if (data)
-    each label,index in labels
-      li
-        a(href='/admin/sp/cafedra/subjects/'+index)=label + ' кафедра'
     table
       thead
         tr
@@ -16,4 +13,6 @@ block content
         each item in data
           tr
             td= ++counter
-            td= item
+            td= item.subject
+            td
+              a(href=`/admin/cafedra/subject/edit/${item._id}`) Редагувати

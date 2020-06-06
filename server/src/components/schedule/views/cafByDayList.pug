@@ -1,17 +1,19 @@
-extends ../../../global/views/layouts/main.pug
+extends ../../../global/views/layouts/mainCafedra.pug
 
 block content
   h2 Розклад
   - if (data)
+    a(href=`/admin/cafedra/schedule/${day}/add`) Додати
+    a(href='#') На екран
     each label,index in labels
       li
-        a(href='/admin/cafedra/schedule/show/'+index)=label
+        a(href=`/admin/cafedra/schedule/show/${index}`)=label
     table
       thead
         tr
+          th Пара
           th Група
           th Аудиторії
-          th Пара
           th Дисципліна
           th Заняття
           th Викладачі
@@ -19,11 +21,13 @@ block content
       tbody
         each item in data
           tr
+            td= item.couple
             td= item.group
             td= [item.classroom1, item.classroom2]
-            td= item.couple
             td= item.subject
             td= item.lesson_type
             td= [item.teacher1, item.teacher2, item.teacher1_1, item.teacher2_1]
             td
-              a(href="/admin/cafedra/schedule/edit/"+item.id) Редагувати
+              a(href=`/admin/cafedra/schedule/edit/${item.id}`) Редагувати
+              form(action=`/admin/cafedra/schedule/delete/${item.id}`, method="post")
+                button(type="submit") Видалити

@@ -1,0 +1,22 @@
+extends ../../../global/views/layouts/mainCafedra.pug
+
+block content
+  - let counter = 0;
+  h2 Аудиторії
+  a(href="/admin/cafedra/classroom/add") Додати
+  - if (data)
+    table
+      thead
+        tr
+          th №п/п 
+          th Аудиторії
+          th Дії
+      tbody
+        each item in data
+          tr
+            td= ++counter
+            td= item
+            td
+              a(href=`/admin/cafedra/classroom/edit/${item}`) Редагувати
+              form(action=`/admin/cafedra/classroom/delete/${item}`, method="post")
+                button(type="submit") Видалити

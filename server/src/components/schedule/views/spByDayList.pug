@@ -1,8 +1,9 @@
-extends ../../../global/views/layouts/main.pug
+extends ../../../global/views/layouts/mainSp.pug
 
 block content
   h2 Розклад
   - if (data)
+    a(href=`/admin/sp/schedule/${day}/add`) Додати
     each label,index in labels
       li
         a(href='/admin/sp/schedule/show/'+index)=label
@@ -12,15 +13,22 @@ block content
           th Група
           th Пара
           th Кафедра
+          th Аудиторії
           th Дисципліна
           th Заняття
           th Викладачі
+          th Дії
       tbody
         each item in data
           tr
             td= item.group
             td= item.couple
             td= item.cafedra
+            td= [item.classroom1, item.classroom2]
             td= item.subject
             td= item.lesson_type
             td= [item.teacher1, item.teacher2, item.teacher1_1, item.teacher2_1]
+            td
+              a(href=`/admin/sp/schedule/edit/${item._id}`) Редагувати
+              form(action=`/admin/sp/schedule/delete/${item.id}`, method="post")
+                button(type="submit") Видалити
