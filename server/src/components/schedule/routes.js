@@ -18,13 +18,14 @@ router
   .route(`/sp/${routeGroup}/upload`)
   .get(authenticationMiddleware(), controller.getUpload)
   .post(authenticationMiddleware(), urlencodedParser, excel_schedule, controller.postUpload);
-// router.options(`/${routeGroup}/:kaf/:date`,(req,res)=>{
 
-//  res.set('Access-Control-Allow-Origin', '*');
-//  res.set("Access-Control-Allow-Headers", "Content-Type");
-//  res.status(200);
-// })
-router.post(`/${routeGroup}/:kaf/:date_index`,controller.getSheduleForCafedra);
-  //router.get(`/cafedra/${routeGroup}/week`, authenticationMiddleware(), controller.getShowWeek);
+router.post(`/${routeGroup}/:kaf/:day`,controller.getSheduleForCafedra);
+router.get(`/${routeGroup}/:kaf`,controller.getClassroom);
+  router.get(`/cafedra/${routeGroup}/show`, authenticationMiddleware(), controller.getShowCafWeek);
+  router.get(`/cafedra/${routeGroup}/show/:idx`, authenticationMiddleware(), controller.getShowCafDay);
+  router
+    .route(`/cafedra/${routeGroup}/edit/:id`)
+    .get(authenticationMiddleware(), controller.getCafedraEdit)
+    .post(authenticationMiddleware(), controller.postCafedraEdit);
 
 module.exports = router;
