@@ -1,5 +1,6 @@
 const path = require("path");
 const User = require("./model");
+const { userTypes } = require("../../global/constants");
 
 module.exports.getList = async (req, res) => {
   const data = await User.find();
@@ -12,13 +13,28 @@ module.exports.getEdit = async (req, res) => {
   if (edited) {
     const {
       name,
+      category,
       local: { email },
     } = edited;
-    return res.status(200).render(path.join(__dirname, "views", "edit"), {
-      id,
-      name,
-      email,
-    });
+    switch (category) {
+      case userTypes.SP:
+        return res.status(200).render(path.join(__dirname, "views", "editSp"), {
+          id,
+          name,
+          email,
+          category,
+        });
+      case userTypes.CAFEDRA:
+        return res.status(200).render(path.join(__dirname, "views", "editCafedra"), {
+          id,
+          name,
+          email,
+          category,
+        });
+
+      default:
+        break;
+    }
   }
 };
 module.exports.postEdit = async (req, res) => {};
@@ -30,7 +46,11 @@ module.exports.postDelete = async (req, res) => {
   }
 };
 module.exports.getChangePassword = async (req, res) => {
-  return res.status(200).render(path.join(__dirname, "views", "changePassword"));
+  const userId = req.session.passport.user;
+  const edited = await User.findById(userId).select({ _id: 0, category: 1 });
+  return res
+    .status(200)
+    .render(path.join(__dirname, "views", "changePassword"), { category: edited.category });
 };
 module.exports.postChangePassword = async (req, res) => {
   const id = req.session.passport.user;
@@ -38,14 +58,18 @@ module.exports.postChangePassword = async (req, res) => {
   const { current_password, new_password1, new_password2 } = req.body;
 
   if (current_password === edited.local.password) {
-    if (new_password1 === new_password2 &&new_password1 !== "") {
+    if (new_password1 === new_password2 && new_password1 !== "") {
       await User.findByIdAndUpdate(id, { "local.password": new_password1 });
-      return res.status(200).redirect('../..')
+      return res.status(200).redirect("../..");
     } else {
-      return res.status(200).render(path.join(__dirname, "views", "changePassword"));
+      return res
+        .status(200)
+        .render(path.join(__dirname, "views", "changePassword"), { category: edited.category });
     }
   } else {
-    return res.status(200).render(path.join(__dirname, "views", "changePassword"));
+    return res
+      .status(200)
+      .render(path.join(__dirname, "views", "changePassword"), { category: edited.category });
   }
 };
 module.exports.getAdd = async (req, res) => {};
