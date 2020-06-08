@@ -5,7 +5,6 @@ const close_btn = document.getElementsByClassName("close");
 for (let i = 0; i < buttons.length; i++) {
   buttons[i].onclick = function () {
     modal.style.display = "block";
-    console.log(i)
   };
 }
 

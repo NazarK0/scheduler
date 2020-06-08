@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
     name: String,
-    user_type:String,
+    category:String,
     cafedra: String,
     group:String,
     local:{

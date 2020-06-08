@@ -1,4 +1,4 @@
-extends ../../../global/views/layouts/main.pug
+extends ../../../global/views/layouts/mainSp.pug
 
 block content
   - let counter = 0;
@@ -16,4 +16,4 @@ block content
         each item in data
           tr
             td= ++counter
-            td= item
+            td= item.subject

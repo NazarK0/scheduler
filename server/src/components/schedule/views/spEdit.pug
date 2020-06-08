@@ -1,10 +1,12 @@
-extends ../../../global/views/layouts/mainCafedra.pug
+extends ../../../global/views/layouts/mainSp.pug
 
 block content
   - const title = mode === "edit" ? "Редагувати" : mode === "add" ? "Додати" : "";
-  - const action = mode === "edit" ? `/admin/cafedra/schedule/edit/${data._id}`: mode === "add" ? `/admin/cafedra/schedule/${day}/add` : "/admin";
+  - const action = mode === "edit" ? `/admin/sp/schedule/edit/${data._id}`: mode === "add" ? `/admin/sp/schedule/${day}/add` : "";
+  - const value_schoolweek = data? data.school_week : "";
   - const value_group = data? data.group : "";
   - const value_couple = data? data.couple : "";
+  - const value_cafedra = data? data.cafedra : "";
   - const value_classroom1 = data? data.classroom1 : "";
   - const value_classroom2 = data? data.classroom2 : "";
   - const value_subject = data? data.subject : "";
@@ -16,11 +18,17 @@ block content
   h2=title
   form(action=action method="post")
     div
+      label Навчальний тиждень:
+      input(type="text" name="school_week" value=value_schoolweek required)
+    div
       label Група*:
       input(type="text" name="group" value=value_group required)
     div
       label Пара*:
       input(type="text" name="couple" value=value_couple required)
+    div
+      label Кафедра:
+      input(type="text" name="cafedra" value=value_cafedra)
     div
       label Аудиторія№1*:
       input(type="text" name="classroom1" value=value_classroom1 required)

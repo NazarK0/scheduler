@@ -10,5 +10,9 @@ const CafedraSchema = new Schema({
     type: Array,
     of: String,
   },
+  subjects:{
+    type: Array,
+    of: String
+  }
 });
 module.exports = mongoose.model("cafedra", CafedraSchema);

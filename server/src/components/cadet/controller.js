@@ -3,8 +3,6 @@ const Schedule = require("../schedule/model");
 const postNewMobile = async (req, res) => {
   const { mobile_key, group } = req.body;
 
-  console.log(mobile_key,'MOB BODY')
-  console.log(group,'MOB BODY')
   new Cadet({ mobile_key, group }).save();
   return res.status(200).send("ok");
 };
@@ -29,29 +27,25 @@ const postMobileLessons = async (req, res) => {
     group:13
 
   });
-
-  console.log(schedule);
-  
-
   res.status(200).send(schedule);
 };
 const editCadet =async (req,res)=>{
+
   const {
     mobile_key,
     group
 
   }=req.body
+  
+  
+  let update_cadet=await Cadet.findOne({mobile_key:mobile_key});
 
-  await Cadet.findOneAndUpdate({mobile_key},{
+  await Cadet.findByIdAndUpdate({_id:update_cadet.id},{
     $set:{
       group:group
     }
-  });
-
+  })
   res.status(200).json(true);
-
-
-
 }
 
 module.exports = {

@@ -1,0 +1,21 @@
+extends ../../../global/views/layouts/mainCafedra.pug
+
+block content
+  - let counter = 0;
+  h2 Предмети
+  a(href="/admin/cafedra/subject/add") Додати
+  - if (data)
+    table
+      thead
+        tr
+          th №п/п 
+          th Предмети
+      tbody
+        each item, idx in data
+          tr
+            td= ++counter
+            td= item
+            td
+              a(href=`/admin/cafedra/subject/edit/${item}`) Редагувати
+              form(action=`/admin/cafedra/subject/delete/${item}`, method="post")
+                button(type="submit") Видалити

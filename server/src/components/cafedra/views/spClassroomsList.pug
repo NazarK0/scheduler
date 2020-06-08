@@ -1,19 +1,18 @@
-extends ../../../global/views/layouts/main.pug
+extends ../../../global/views/layouts/mainSp.pug
 
 block content
   - let counter = 0;
   h2 Аудиторії
   - if (data)
-    each label,index in labels
-      li
-        a(href='/admin/sp/cafedra/classrooms/'+index)=label + ' кафедра'
     table
       thead
         tr
           th №п/п 
+          th Кафедра 
           th Аудиторії
       tbody
         each item in data
           tr
             td= ++counter
-            td= item
+            td= item.name
+            td= item.classrooms
