@@ -2,17 +2,19 @@
 
 mixin signInInfo
   div
-    label Ім'я:
-    input(type="text" name="name" value=f_name required)
+    label Ім'я*:
+    input(type="text" name="name" value=name required)
   div
     label Категорія:
-    input(type="text" name="user_type" value=user_type required)
+    select(name="user_type")
+      each type in user_types
+        option(value=type)=type
   div
     label Кафедра:
-    input(type="text" name="cafedra" value=cafedra required)
+    input(type="text" name="cafedra" value=cafedra)
   div
     label Група:
-    input(type="text" name="group" value=group required)
+    input(type="text" name="group" value=group)
 
 doctype html
 html(lang="uk")
@@ -21,7 +23,7 @@ html(lang="uk")
   body
     if message
       p=message
-    form(action=action method="post")
+    form(action=action method="post" autocomplete="off")
       case type
         when 'signUp'
           +signInInfo

@@ -35,8 +35,16 @@ router.get(
   controller.getCafedraSubjects
 );
 router
-  .route(`/${routeGroup}/subject/edit/:id`)
+  .route(`/${routeGroup}/subject/add`)
+  .get(authenticationMiddleware(), controller.getAddSubject)
+  .post(authenticationMiddleware(), controller.postAddSubject);
+router
+  .route(`/${routeGroup}/subject/edit/:title`)
   .get(authenticationMiddleware(), controller.getEditSubject)
   .post(authenticationMiddleware(), controller.postEditSubject);
-
+router.post(
+  `/${routeGroup}/subject/delete/:title`,
+  authenticationMiddleware(),
+  controller.postDeleteSubject
+);
 module.exports = router;

@@ -68,10 +68,14 @@ module.exports.getCafedraClassrooms = async (req, res) => {
       _id: 0,
       classrooms: 1,
     });
-    cafedra.classrooms.sort();
-    return res
-      .status(200)
-      .render(path.join(__dirname, "views", "cafedraClassroomsList"), { data: cafedra.classrooms });
+    try {
+      cafedra.classrooms.sort();
+      return res.status(200).render(path.join(__dirname, "views", "cafedraClassroomsList"), {
+        data: cafedra.classrooms,
+      });
+    } catch (err) {
+      return res.status(200).render(path.join(__dirname, "views", "cafedraClassroomsList"));
+    }
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getAddClassroom = async (req, res) => {
@@ -83,7 +87,7 @@ module.exports.getAddClassroom = async (req, res) => {
 module.exports.postAddClassroom = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
-    const { title } = req.body;
+    const { new_title } = req.body;
     const user = await User.findById(userId).select({ _id: 0, cafedra: 1 });
     const cafedra = await Cafedra.findOne({ name: user.cafedra }).select({
       _id: 0,
@@ -91,11 +95,11 @@ module.exports.postAddClassroom = async (req, res) => {
     });
 
     if (!cafedra) {
-      await new Cafedra({ name: user.cafedra, classrooms: [title] }).save();
+      await new Cafedra({ name: user.cafedra, classrooms: [new_title] }).save();
       return res.status(200).redirect("../classrooms");
     }
 
-    cafedra.classrooms.push(title);
+    cafedra.classrooms.push(new_title);
     await Cafedra.findOneAndUpdate({ name: user.cafedra }, { classrooms: cafedra.classrooms });
     return res.status(200).redirect("../classrooms");
   } else return res.status(200).redirect("/signin");
@@ -166,55 +170,107 @@ module.exports.getCafedraSubjects = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
     const user = await User.findById(userId).select({ _id: 0, cafedra: 1 });
-    let cafedra = await Schedule.find({ cafedra: user.cafedra, subject: { $nin: [null, ""] } })
-      .select({
-        _id: 1,
-        subject: 2,
-      })
-      .sort({ subject: "asc" });
-
-    cafedra = JSON.parse(JSON.stringify(cafedra));
-    let mymap = new Map();
-
-    unique = cafedra.filter((el) => {
-      const val = mymap.get(el.subject);
-      if (val) {
-        if (el._id < val) {
-          mymap.delete(el.subject);
-          mymap.set(el.subject, el._id);
-          return true;
-        } else {
-          return false;
-        }
-      }
-      mymap.set(el.subject, el._id);
-      return true;
+    const cafedra = await Cafedra.findOne({ name: user.cafedra }).select({
+      _id: 0,
+      subjects: 1,
     });
 
-    return res
-      .status(200)
-      .render(path.join(__dirname, "views", "cafedraSubjectsList"), { data: unique });
+    try {
+      cafedra.subjects.sort();
+
+      return res
+        .status(200)
+        .render(path.join(__dirname, "views", "cafedraSubjectsList"), { data: cafedra.subjects });
+    } catch (err) {
+      return res.status(200).render(path.join(__dirname, "views", "cafedraSubjectsList"));
+    }
+  } else return res.status(200).redirect("/signin");
+};
+module.exports.getAddSubject = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    return res.status(200).render(path.join(__dirname, "views", "editSubject"), { mode: "add" });
+  } else return res.status(200).redirect("/signin");
+};
+module.exports.postAddSubject = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const { new_title } = req.body;
+    const user = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+    const cafedra = await Cafedra.findOne({ name: user.cafedra }).select({
+      _id: 0,
+      subjects: 1,
+    });
+
+    if (!cafedra) {
+      await new Cafedra({ name: user.cafedra, subjects: [new_title] }).save();
+      return res.status(200).redirect("../subjects");
+    }
+
+    cafedra.subjects.push(new_title);
+    await Cafedra.findOneAndUpdate({ name: user.cafedra }, { subjects: cafedra.subjects });
+    return res.status(200).redirect("../subjects");
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getEditSubject = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
-    const { id } = req.params;
-    const schedule = await Schedule.findById(id).select({ _id: 0, subject: 1 });
-
+    const { title } = req.params;
     return res
       .status(200)
-      .render(path.join(__dirname, "views", "editSubject"), { data: schedule.subject, id });
+      .render(path.join(__dirname, "views", "editSubject"), { mode: "edit", data: title });
   } else return res.status(200).redirect("/signin");
 };
 module.exports.postEditSubject = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
-    const { id } = req.params;
-    const { new_subject } = req.body;
+    const { title } = req.params;
+    const { new_title } = req.body;
+    const id = req.session.passport.user;
+    const user = await User.findById(id).select({ _id: 0, cafedra: 1 });
+    const cafedra = await Cafedra.findOne({ name: user.cafedra }).select({
+      _id: 0,
+      subjects: 1,
+    });
 
-    const schedule = await Schedule.findById(id).select({ _id: 0, subject: 1 });
-    await Schedule.updateMany({ subject: schedule.subject }, { subject: new_subject });
+    if (!cafedra) {
+      return res.status(200).redirect("../subjects");
+    }
+
+    const editIdx = cafedra.subjects.findIndex((item) => item === title);
+    if (editIdx >= 0 && editIdx < cafedra.subjects.length) {
+      cafedra.subjects = [
+        ...cafedra.subjects.slice(0, editIdx),
+        new_title,
+        ...cafedra.subjects.slice(editIdx + 1),
+      ];
+    }
+    await Cafedra.findOneAndUpdate({ name: user.cafedra }, { subjects: cafedra.subjects });
+    return res.status(200).redirect("../../subjects");
+  } else return res.status(200).redirect("/signin");
+};
+module.exports.postDeleteSubject = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const { title } = req.params;
+    const user = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+    const cafedra = await Cafedra.findOne({ name: user.cafedra }).select({
+      _id: 0,
+      subjects: 1,
+    });
+
+    if (!cafedra) {
+      return res.status(200).redirect("../subjects");
+    }
+
+    const deleteIdx = cafedra.subjects.findIndex((item) => item === title);
+    if (deleteIdx >= 0 && deleteIdx < cafedra.subjects.length) {
+      cafedra.subjects = [
+        ...cafedra.subjects.slice(0, deleteIdx),
+        ...cafedra.subjects.slice(deleteIdx + 1),
+      ];
+    }
+    await Cafedra.findOneAndUpdate({ name: user.cafedra }, { subjects: cafedra.subjects });
     return res.status(200).redirect("../../subjects");
   } else return res.status(200).redirect("/signin");
 };

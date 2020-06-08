@@ -2,7 +2,7 @@ extends ../../../global/views/layouts/mainCafedra.pug
 
 block content
   - const title = mode === "edit" ? "Редагувати" : mode === "add" ? "Додати" : "";
-  - const action = mode === "edit" ? `/admin/cafedra/classroom/edit/${data}`: mode === "add" ? `/admin/cafedra/classroom/add` : "/admin";
+  - const action = mode === "edit" ? `/admin/cafedra/classroom/edit/${data}`: mode === "add" ? `/admin/cafedra/classroom/add` : "/signin";
   - const value_title = data? data : "";
   h2=title
   form(action=action method="post")

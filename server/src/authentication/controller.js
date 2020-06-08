@@ -1,27 +1,26 @@
 const path = require("path");
 const User = require("../components/user/model");
+const { userTypes } = require('../global/constants')
 
 const view = path.join(__dirname, "views", "auth");
 const viewTypes = {
   signIn: "signIn",
   signUp: "signUp",
 };
+const user_types = Array.from(Object.values(userTypes));
 
 module.exports.getSignIn = async (req, res) => {
   res.render(view, { title: "Вхід", type: viewTypes.signIn });
 };
-
 module.exports.postSignIn = async (req, res) => {
   res.redirect("/admin");
 };
-
 module.exports.getSignUp = async (req, res) => {
-  res.render(view, { title: "Реєстрація", type: viewTypes.signUp });
+  res.render(view, { title: "Реєстрація", type: viewTypes.signUp, user_types});
 };
-
 module.exports.postSignUp = async (req, res) => {
   const { name, user_type, cafedra, group, email, password, password2 } = req.body;
-  const data = { name, user_type, cafedra, group, email };
+  const data = { name, cafedra, group, email };
 
   const user = await User.findOne({ "local.email": email });
 
@@ -29,6 +28,7 @@ module.exports.postSignUp = async (req, res) => {
     res.status(200).render(view, {
       title: "Реєстрація",
       type: viewTypes.signUp,
+      user_types,
       ...data,
       message: "Такий e-mail уже зареєстровано",
     });
@@ -36,13 +36,14 @@ module.exports.postSignUp = async (req, res) => {
     res.status(200).render(view, {
       title: "Реєстрація",
       type: viewTypes.signUp,
+      user_types,
       ...data,
       message: "Паролі не співпадають",
     });
   } else {
     const userData = {
       name,
-      user_type,
+      category: user_type,
       cafedra,
       group,
       local: { email, password },
@@ -51,7 +52,6 @@ module.exports.postSignUp = async (req, res) => {
     res.status(200).redirect("./signin");
   }
 };
-
 module.exports.postLogout = async (req, res) => {
   req.logout();
   res.redirect("/signin");

@@ -1,10 +1,12 @@
 extends ../../../global/views/layouts/mainCafedra.pug
 
 block content
-  - const value_subject = data? data : "";
+  - const title = mode === "edit" ? "Редагувати" : mode === "add" ? "Додати" : "";
+  - const action = mode === "edit" ? `/admin/cafedra/subject/edit/${data}`: mode === "add" ? `/admin/cafedra/subject/add` : "/signin";
+  - const value_title = data? data : "";
   h2 Редагувати
-  form(action=`/admin/cafedra/subject/edit/${id}` method="post")
+  form(action=action method="post")
     div
       label Дисципліна*:
-      input(type="text" name="new_subject" value=value_subject required)
+      input(type="text" name="new_title" value=value_title required)
     button(type="submit") Зберегти
