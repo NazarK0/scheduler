@@ -20,9 +20,10 @@ module.exports.getShow = async (req, res) => {
       day: "2-digit",
     });
     const formattedDates = dates.map((date) => dateTimeFormat.format(date));
+    const data = await Schedule.find({ date: dates[0] }).sort({group: "asc", couple: "asc"})
 
     return res.status(200).render(path.join(__dirname, "views", "spByDayList"), {
-      data: await Schedule.find({ date: dates[0] }),
+      data,
       labels: formattedDates,
       day: 0,
     });
@@ -40,9 +41,10 @@ module.exports.getShowByDate = async (req, res) => {
       day: "2-digit",
     });
     const formattedDates = dates.map((date) => dateTimeFormat.format(date));
+    const data = await Schedule.find({ date: dates[id] }).sort({ group: "asc", couple: "asc" });
 
     return res.status(200).render(path.join(__dirname, "views", "spByDayList"), {
-      data: await Schedule.find({ date: dates[id] }),
+      data,
       labels: formattedDates,
       day: id,
     });
