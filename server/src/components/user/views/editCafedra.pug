@@ -1,0 +1,17 @@
+extends ../../../global/views/layouts/mainCafedra.pug
+
+block content
+  h2 Налаштування
+  h4 Особисті дані
+  form(action=`/admin/user/edit`, method="post")
+    div
+      label(for="name") Ім'я
+      input(id="name" type="text" value=name required)
+    div
+      label(for="email") e-mail
+      input(id="email" type="email" value=email required)
+    div
+      label(for="password") Пароль
+      input(id="password" type="text" value=password required)    
+    a(href="/admin/user/change-password") Змінити пароль
+    button(type="submit") Зберегти

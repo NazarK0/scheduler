@@ -1,7 +1,0 @@
-extends ../../../global/views/partials/modal/modal.pug
-
-block content
-  p Ви впевнені що хочете видалити?
-  form(action=`/admin/user/delete/${id}`, method="post")
-    button(type="submit") Так
-  a(href="#" class="close") Ні
