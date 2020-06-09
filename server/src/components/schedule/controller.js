@@ -6,6 +6,7 @@ const addingExcelDataToDb = require("../../API/addingExcelDataToDb");
 const convertExcelToJson = require("convert-excel-to-json");
 const { getShedule } = require("../../API/SheduleTable.js/getShedule");
 const User = require("../user/model");
+const Cafedra = require("../cafedra/model");
 const { userTypes } = require("../../global/constants");
 const hasAccess = require("../../API/hasAccess");
 
@@ -20,7 +21,7 @@ module.exports.getShow = async (req, res) => {
       day: "2-digit",
     });
     const formattedDates = dates.map((date) => dateTimeFormat.format(date));
-    const data = await Schedule.find({ date: dates[0] }).sort({group: "asc", couple: "asc"})
+    const data = await Schedule.find({ date: dates[0] }).sort({ group: "asc", couple: "asc" });
 
     return res.status(200).render(path.join(__dirname, "views", "spByDayList"), {
       data,
@@ -184,9 +185,18 @@ module.exports.getShowCafWeek = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
     const cafedra = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+    const classrooms = await Cafedra.findOne({ name: cafedra.cafedra }).select({
+      _id: 0,
+      classrooms: 1,
+    });
 
     const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
-    const schedule = await Schedule.find(cafedra)
+    const schedule = await Schedule.find()
+      .or([
+        { classroom1: classrooms.classrooms },
+        { classroom2: classrooms.classrooms },
+        { cafedra: cafedra.cafedra },
+      ])
       .where({ date: dates[0] })
       .select({
         _id: 1,
@@ -222,8 +232,17 @@ module.exports.getShowCafDay = async (req, res) => {
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
     const { idx } = req.params;
     const cafedra = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+    const classrooms = await Cafedra.findOne({ name: cafedra.cafedra }).select({
+      _id: 0,
+      classrooms: 1,
+    });
     const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
-    const schedule = await Schedule.find(cafedra)
+    const schedule = await Schedule.find()
+      .or([
+        { classroom1: classrooms.classrooms },
+        { classroom2: classrooms.classrooms },
+        { cafedra: cafedra.cafedra },
+      ])
       .where({ date: dates[idx] })
       .select({
         group: 1,
