@@ -242,6 +242,10 @@ module.exports.getShowCafDay = async (req, res) => {
         { classroom1: classrooms.classrooms },
         { classroom2: classrooms.classrooms },
         { cafedra: cafedra.cafedra },
+        { teacher1: classrooms.classrooms },
+        { teacher2: classrooms.classrooms },
+        { teacher3: classrooms.classrooms },
+        { teacher4: classrooms.classrooms },
       ])
       .where({ date: dates[idx] })
       .select({
