@@ -4,7 +4,7 @@ const Schedule = require("./model");
 const getScheduleFromExcel = require("../../API/getScheduleFromExcel");
 const addingExcelDataToDb = require("../../API/addingExcelDataToDb");
 const convertExcelToJson = require("convert-excel-to-json");
-const { getShedule } = require("../../API/SheduleTable.js/getShedule");
+const { getShedule,anySchedule } = require("../../API/SheduleTable.js/getShedule");
 const User = require("../user/model");
 const Cafedra=require('../cafedra/model');
 const { userTypes } = require("../../global/constants");
@@ -180,6 +180,12 @@ module.exports.getSheduleForCafedra = async (req, res) => {
     res.status(200).json(result);
  
 };
+module.exports.getAnySchedule = async (req,res)=>{
+  console.log('in')
+  const {kaf,day}=req.params;
+  const result=await anySchedule(kaf,day);
+  return res.json(result);
+}
 module.exports.getShowCafWeek = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {

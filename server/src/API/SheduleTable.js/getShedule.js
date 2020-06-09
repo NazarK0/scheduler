@@ -25,7 +25,7 @@ async function getShedule(kaf,day){
        
     ).sort({couple:1})
     
-    console.log(candidate_array);
+
     return candidate_array;
 
 
@@ -34,10 +34,36 @@ async function getShedule(kaf,day){
 
 
 }
+async function anySchedule(kaf,day){
+
+    const cafedra=await Cafedra.findOne({name:kaf});
+    const dates = await Shedule.find().select({ _id: 0, date: 1 }).distinct("date");
+    
+
+    let any_subbjects=await Shedule.find({
+        date:dates[day-1],
+    }).or([
+        {subject:{$in:cafedra.subjects}},
+        {cafedra:!kaf},
+        {classroom1:!{$in:cafedra.classrooms}},
+        {classroom2:!{$in:cafedra.classrooms}},
+    ])
+        .sort({
+        couple:1
+    });
+    // where({date:dates[day-1]}).
+    // where({subject:{$in:cafedra.subjects}}).
+    // where({kaf:!kaf}).
+    // where({classroom1:!{$in:cafedra.classrooms}} && {classroom2:!{$in:cafedra.classrooms}});
+
+    return any_subbjects;
+
+}
 
 
 module.exports={
-    getShedule
+    getShedule,
+    anySchedule
 }
 
 
