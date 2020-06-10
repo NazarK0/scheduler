@@ -7,28 +7,29 @@ block content
     each label,index in labels
       li
         a(href='/admin/sp/schedule/show/'+index)=label
-    table
-      thead
-        tr
-          th Група
-          th Пара
-          th Кафедра
-          th Аудиторії
-          th Дисципліна
-          th Заняття
-          th Викладачі
-          th Дії
-      tbody
-        each item in data
+    div(class="table-wrapper")
+      table(class="fl-table")
+        thead
           tr
-            td= item.group
-            td= item.couple
-            td= item.cafedra
-            td= [item.classroom1, item.classroom2]
-            td= item.subject
-            td= item.lesson_type
-            td= [item.teacher1, item.teacher2, item.teacher1_1, item.teacher2_1]
-            td
-              a(href=`/admin/sp/schedule/edit/${item._id}`) Редагувати
-              form(action=`/admin/sp/schedule/delete/${item.id}`, method="post")
-                button(type="submit") Видалити
+            th Група
+            th Пара
+            th Кафедра
+            th Аудиторії
+            th Дисципліна
+            th Заняття
+            th Викладачі
+            th Дії
+        tbody
+          each item in data
+            tr
+              td= item.group
+              td= item.couple
+              td= item.cafedra
+              td= [item.classroom1, item.classroom2]
+              td= item.subject
+              td= item.lesson_type
+              td= [item.teacher1, item.teacher2, item.teacher1_1, item.teacher2_1]
+              td
+                a(href=`/admin/sp/schedule/edit/${item._id}`) Редагувати
+                form(action=`/admin/sp/schedule/delete/${item.id}`, method="post")
+                  button(type="submit" class="delete") Видалити

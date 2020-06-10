@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz&display=swap');
+*{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 26px;
+}
+
+body{
+    background-color:  #6F6D5B;
+}
+.input_group{
+    margin-top: 30%;
+}
+img{
+    width: 128px;
+}
+.signIn{
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 20px;
+    padding: 10px;
+    border: 2px solid #474F3F;
+}
+
+.signInButton {
+	box-shadow:inset 0px -3px 7px 0px #29bbff;
+	background:linear-gradient(to bottom, #2dabf9 5%, #0688fa 100%);
+	background-color:#2dabf9;
+	border-radius:3px;
+	border:1px solid #0b0e07;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	padding:9px 23px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #263666;
+}
+.signInButton:hover {
+	background:linear-gradient(to bottom, #0688fa 5%, #2dabf9 100%);
+	background-color:#0688fa;
+}
+.signInButton:active {
+	position:relative;
+	top:1px;
+}
+
+@media screen and (max-width:1921px) {
+    .signIn{
+        background-color: #ABA597;
+        width: 420px;
+        height: 380px;
+    }
+    input{
+        height: 40px;
+    }
+    img{
+        left: 20%;
+    }
+}
+
+@media screen and (max-width:1681px) {
+    .signIn{
+        background-color: #ABA597;
+        width: 380px;
+        height: 350px;
+    }
+    img{
+        left: 31%;
+    }
+}
+
+@media screen and (max-width:1367px) {
+    .signIn{
+        display: inline-block;
+        background-color: #ABA597;
+        width: 370px;
+        height: 340px;
+    }
+}
+@media screen and (max-width:1025px) {
+    .signIn{
+        background-color: #ABA597;
+        width: 280px;
+        height: 260px;
+    }
+    img{
+        left: 33%;
+    }
+}
+input{
+    width: 100%;
+    border-radius: 5px;
+    border:2px solid #474F3F;
+    margin-top: 5px;
+}
+
+input:hover{
+    border-radius: 5px;
+    border:1px solid rgb(255, 166, 0);
+}
+img {
+    position: absolute;
+    top: 0;
+    left: 32%;
+    right: 0;
+    bottom: 0;
+}

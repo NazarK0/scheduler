@@ -5,17 +5,20 @@ block content
   h2 Предмети
   a(href="/admin/cafedra/subject/add") Додати
   - if (data)
-    table
-      thead
-        tr
-          th №п/п 
-          th Предмети
-      tbody
-        each item, idx in data
+    div(class="table-wrapper")
+      table(class="fl-table")
+        thead
           tr
-            td= ++counter
-            td= item
-            td
-              a(href=`/admin/cafedra/subject/edit/${item}`) Редагувати
-              form(action=`/admin/cafedra/subject/delete/${item}`, method="post")
-                button(type="submit") Видалити
+            th №п/п 
+            th Предмети
+            th Операції
+        tbody
+          each item, idx in data
+            tr
+              td= ++counter
+              td= item
+              td
+                a(href=`/admin/cafedra/subject/edit/${item}`) Редагувати
+                form(action=`/admin/cafedra/subject/delete/${item}`, method="post")
+                  button(type="submit" class="delete") Видалити
+                    i.far.fa-trash-alt 

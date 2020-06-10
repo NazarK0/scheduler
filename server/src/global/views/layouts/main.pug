@@ -1,4 +1,8 @@
 doctype html
+style
+  include /styles/main.css
+
+
 html(lang="uk")
   head
     meta(charset="UTF-8")
@@ -41,6 +45,8 @@ html(lang="uk")
     meta(property="og:type" content="website")
     meta(property="og:url" content="#")
     meta(property="og:image" content="/img/title.jpg")
+    
   block headscripts
+    script(src="https://kit.fontawesome.com/972b3d67f4.js" crossorigin="anonymous")
   body
     block body

@@ -3,31 +3,33 @@ extends ../../../global/views/layouts/mainCafedra.pug
 block content
   h2 Розклад
   - if (data)
-    a(href=`/admin/cafedra/schedule/${day}/add`) Додати
-    a(href='#') На екран
-    each label,index in labels
-      li
-        a(href=`/admin/cafedra/schedule/show/${index}`)=label
-    table
-      thead
-        tr
-          th Пара
-          th Група
-          th Аудиторії
-          th Дисципліна
-          th Заняття
-          th Викладачі
-          th Дії
-      tbody
-        each item in data
+    a(href=`/admin/cafedra/schedule/${day}/add` style="color: aqua;") Додати          
+    a(href='#' style="color: purple;") На екран
+    ul(class="dates")
+      each label,index in labels
+        li
+          a(href=`/admin/cafedra/schedule/show/${index}`)=label
+    div(class="table-wrapper")
+      table(class="fl-table")
+        thead
           tr
-            td= item.couple
-            td= item.group
-            td= [item.classroom1, item.classroom2]
-            td= item.subject
-            td= item.lesson_type
-            td= [item.teacher1, item.teacher2, item.teacher1_1, item.teacher2_1]
-            td
-              a(href=`/admin/cafedra/schedule/edit/${item.id}`) Редагувати
-              form(action=`/admin/cafedra/schedule/delete/${item.id}`, method="post")
-                button(type="submit") Видалити
+            th Пара
+            th Група
+            th Аудиторії
+            th Дисципліна
+            th Заняття
+            th Викладачі
+            th Дії
+        tbody
+          each item in data
+            tr
+              td= item.couple
+              td= item.group
+              td= [item.classroom1, item.classroom2]
+              td= item.subject
+              td= item.lesson_type
+              td= [item.teacher1, item.teacher2, item.teacher1_1, item.teacher2_1]
+              td
+                a(href=`/admin/cafedra/schedule/edit/${item.id}`) Редагувати
+                form(action=`/admin/cafedra/schedule/delete/${item.id}`, method="post")
+                  button(type="submit" class="delete") Видалити

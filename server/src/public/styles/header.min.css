@@ -1,1 +1,6 @@
-.logo{width:60px}
+.logo{width:90px}
+
+.header{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}

@@ -1,21 +1,8 @@
+style
+  include /styles/login.css
 - const action = type === "signIn" ? "signin": type === "signUp" ? "signup" : "/";
 
-mixin signInInfo
-  div
-    label Ім'я*:
-    input(type="text" name="name" value=name required)
-  div
-    label Категорія:
-    select(name="user_type")
-      each type in user_types
-        option(value=type)=type
-  div
-    label Кафедра:
-    input(type="text" name="cafedra" value=cafedra)
-  div
-    label Група:
-    input(type="text" name="group" value=group)
-
+  
 doctype html
 html(lang="uk")
   head
@@ -23,24 +10,31 @@ html(lang="uk")
   body
     if message
       p=message
-    form(action=action method="post" autocomplete="off")
-      case type
-        when 'signUp'
-          +signInInfo
-      - if (type === 'signIn' || type === 'signUp')
-        div
-          label E-mail:
-          input(type="email" name="email" value=email required)
-        div
-          label Пароль:
-          input(type="password" name="password" required)
-      case type
-        when 'signUp'
-          div
-            label Пароль ще раз:
-            input(type="password" name="password2" required)
-          a(href="/signin") Увійти
-        when 'signIn'
-          a(href="/signup") Реєстрація
-
-      button(type="submit")=title
+    form(action=action method="post" autocomplete="off" class="signIn")
+      div
+        case type
+          when 'signUp'
+            div
+              input(type="text" name="name" value=name required placeholder="Ім'я")
+              label Категорія:
+              select(name="user_type")
+                each type in user_types
+                  option(value=type)=type
+              input(type="text" name="cafedra" value=cafedra placeholder="Кафедра")
+              input(type="text" name="group" value=group placeholder="Група")
+              input(type="password" name="password" required placeholder="Пароль")
+        - if (type === 'signIn' || type === 'signUp')
+          case type
+            when 'signUp'
+              div
+                input(type="email" name="email" value=email required placeholder="E-mail")
+                input(type="password" name="password2" required placeholder="Повторіть пароль")
+              a(href="/signin") Увійти
+            when 'signIn'
+              div
+                img(src="http://www.viti.edu.ua/img/viti.png", alt="")
+                div(class="input_group")
+                  input(type="email" name="email" value=email required placeholder="E-mail")
+                  input(type="password" name="password" required placeholder="Пароль")
+                a(href="/signup") Реєстрація
+        button(type="submit" class="signInButton")=title  
