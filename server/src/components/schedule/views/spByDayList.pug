@@ -3,10 +3,11 @@ extends ../../../global/views/layouts/mainSp.pug
 block content
   h2 Розклад
   - if (data)
-    a(href=`/admin/sp/schedule/${day}/add`) Додати
+    a(href=`/admin/sp/schedule/${day}/add` class="add-btn") Додати
     each label,index in labels
-      li
-        a(href='/admin/sp/schedule/show/'+index)=label
+      ul(class="dates")
+        li
+          a(href='/admin/sp/schedule/show/'+index)=label
     div(class="table-wrapper")
       table(class="fl-table")
         thead

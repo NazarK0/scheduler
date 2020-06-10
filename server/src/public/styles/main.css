@@ -188,3 +188,17 @@ a{
     top: 0;
     right: 0;
 }
+
+.add-btn{
+    border-radius: 6px;
+    border: 2px solid white;
+    padding: 2px;
+    background-color: lightgreen;
+}
+
+.onscreen-btn{
+    border-radius: 6px;
+    border: 2px solid white;
+    padding: 2px;
+    background-color: rgb(248, 223, 139);
+}

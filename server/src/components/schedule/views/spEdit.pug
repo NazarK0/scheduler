@@ -15,6 +15,8 @@ block content
   - const value_teacher2 = data? data.teacher2 : "";
   - const value_teacher1_1 = data? data.teacher1_1 : "";
   - const value_teacher2_1 = data? data.teacher2_1 : "";
+  style 
+    include /styles/edit.css
   h2=title
   form(action=action method="post")
     div
@@ -53,4 +55,4 @@ block content
     div
       label Викладач №4:
       input(type="text" name="teacher2_1" value=value_teacher2_1)
-    button(type="submit") Зберегти
+    button(type="submit" class="save-btn") Зберегти
