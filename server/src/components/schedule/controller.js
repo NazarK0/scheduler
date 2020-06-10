@@ -181,7 +181,6 @@ module.exports.getSheduleForCafedra = async (req, res) => {
  
 };
 module.exports.getAnySchedule = async (req,res)=>{
-  console.log('in')
   const {kaf,day}=req.params;
   const result=await anySchedule(kaf,day);
   return res.json(result);

@@ -42,11 +42,18 @@ async function anySchedule(kaf,day){
 
     let any_subbjects=await Shedule.find({
         date:dates[day-1],
+       
+      
+    }).where({
+        subject:cafedra.subjects
+
+    }).where({
+        cafedra:kaf
+
     }).or([
-        {subject:{$in:cafedra.subjects}},
-        {cafedra:!kaf},
-        {classroom1:!{$in:cafedra.classrooms}},
-        {classroom2:!{$in:cafedra.classrooms}},
+        
+        {classroom1:{$not:{$in:cafedra.classrooms}}},
+        {classroom2:{$not:{$in:cafedra.classrooms}}},
     ])
         .sort({
         couple:1
