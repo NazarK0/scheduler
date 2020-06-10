@@ -1,9 +1,11 @@
 style
   include /styles/header.min.css
+  include /styles/main.css
 
 header#header.header
   a(href="/admin")
     img.logo(src="/img/Logo.png" alt="logo")
   block menu
   form(action="/logout" method="POST")
-    button(type="submit") Вихід
+    button(type="submit" class="exit")
+      i.fas.fa-power-off

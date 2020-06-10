@@ -1,11 +1,15 @@
 extends ../../../global/views/layouts/mainCafedra.pug
 
+
 block content
+
+  style 
+    include /styles/edit.css
   - const title = mode === "edit" ? "Редагувати" : mode === "add" ? "Додати" : "";
   - const action = mode === "edit" ? `/admin/cafedra/classroom/edit/${data}`: mode === "add" ? `/admin/cafedra/classroom/add` : "/signin";
   - const value_title = data? data : "";
   h2=title
-  form(action=action method="post")
+  form(action=action method="post" class="edit-container")
     div
       label Аудиторія*:
       input(type="text" name="new_title" value=value_title required)

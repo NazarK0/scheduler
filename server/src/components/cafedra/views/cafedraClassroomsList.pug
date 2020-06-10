@@ -5,18 +5,20 @@ block content
   h2 Аудиторії
   a(href="/admin/cafedra/classroom/add") Додати
   - if (data)
-    table
-      thead
-        tr
-          th №п/п 
-          th Аудиторії
-          th Дії
-      tbody
-        each item in data
+    div(class="table-wrapper")  
+      table(class="fl-table")
+        thead
           tr
-            td= ++counter
-            td= item
-            td
-              a(href=`/admin/cafedra/classroom/edit/${item}`) Редагувати
-              form(action=`/admin/cafedra/classroom/delete/${item}`, method="post")
-                button(type="submit") Видалити
+            th №п/п 
+            th Аудиторії
+            th Дії
+        tbody
+          each item in data
+            tr
+              td= ++counter
+              td= item
+              td
+                a(href=`/admin/cafedra/classroom/edit/${item}`) Редагувати
+                form(action=`/admin/cafedra/classroom/delete/${item}`, method="post")
+                  button(type="submit" class="delete") Видалити
+                    i.far.fa-trash-alt 

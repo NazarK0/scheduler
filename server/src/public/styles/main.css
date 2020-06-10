@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz&display=swap');
+*{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 22px;
+}
+body{
+    background-color: rgb(179, 207, 178);
+}
+
+.dates{
+    display: flex;
+}
+.dates li{
+    margin-left: 2%;
+    border-radius: 6px;
+    border: 2px solid black;
+    padding: 3px;
+    background-color: rgb(192, 192, 192);
+    list-style: none;
+}
+
+a{
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+}
+
+.delete {
+	box-shadow:inset 0px 1px 0px 0px #cf866c;
+	background:linear-gradient(to bottom, #d0451b 5%, #bc3315 100%);
+	background-color:#d0451b;
+	border-radius:3px;
+	border:1px solid #942911;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+    font-size: 20px;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #854629;
+}
+.delete:hover {
+	background:linear-gradient(to bottom, #bc3315 5%, #d0451b 100%);
+	background-color:#bc3315;
+}
+.delete:active {
+	position:relative;
+	top:1px;
+}
+
+
+.fl-table {
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: normal;
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    white-space: nowrap;
+    background-color: rgb(175, 175, 175);
+}
+
+.fl-table td, .fl-table th {
+    text-align: center;
+    padding: 8px;
+}
+
+.fl-table td {
+    border-right: 1px solid #1a552b;
+    font-size: 20px;
+}
+
+.fl-table thead th {
+    color: #fffdfd;
+    background: rgb(58, 117, 51);
+}
+
+
+.fl-table thead th:nth-child(odd) {
+    color: #ffffff;
+    background: #1a572c;
+}
+
+.fl-table tr:nth-child(even) {
+    background: rgb(212, 212, 212);
+}
+
+/* Responsive */
+
+@media (max-width: 767px) {
+    .fl-table {
+        display: block;
+        width: 100%;
+        font-size: 16px;
+    }
+    .table-wrapper:before{
+        content: "Scroll horizontally >";
+        display: block;
+        text-align: right;
+        font-size: 16px;
+        color: white;
+        padding: 0 0 10px;
+    }
+    .fl-table thead, .fl-table tbody, .fl-table thead th {
+        display: block;
+    }
+    .fl-table thead th:last-child{
+        border-bottom: none;
+    }
+    .fl-table thead {
+        float: left;
+    }
+    .fl-table tbody {
+        width: auto;
+        position: relative;
+        overflow-x: auto;
+    }
+    .fl-table td, .fl-table th {
+        padding: 20px .625em .625em .625em;
+        height: 60px;
+        vertical-align: middle;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        overflow-y: auto;
+        width: 120px;
+        font-size: 13px;
+        text-overflow: ellipsis;
+    }
+    .fl-table thead th {
+        text-align: left;
+        border-bottom: 1px solid #f7f7f9;
+    }
+    .fl-table tbody tr {
+        display: table-cell;
+    }
+    .fl-table tbody tr:nth-child(odd) {
+        background: none;
+    }
+    .fl-table tr:nth-child(even) {
+        background: transparent;
+    }
+    .fl-table tr td:nth-child(odd) {
+        background: #F8F8F8;
+        border-right: 1px solid #E6E4E4;
+    }
+    .fl-table tr td:nth-child(even) {
+        border-right: 1px solid #E6E4E4;
+    }
+    .fl-table tbody td {
+        display: block;
+        text-align: center;
+    }
+}
+
+.table-wrapper{
+    margin: 10px 70px 70px;
+    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.2 );
+}
+
+.exit {
+    margin: 10px;
+    position: absolute;
+    top: 0;
+    right: 0;
+	box-shadow:inset 0px 0px 15px 3px #5e2335;
+	background:linear-gradient(to bottom, #6e2e3e 5%, #894141 100%);
+	background-color:#6e2e2e;
+	border-radius:17px;
+	border:1px solid #471f1f;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	padding:6px 13px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #662626;
+}
+.exit:hover {
+    margin: 10px;
+    position: absolute;
+    top: 0;
+    right: 0;
+	background:linear-gradient(to bottom, #894141 5%, #6e2e2e 100%);
+	background-color:#894141;
+}
+.exit:active {
+    margin: 10px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
