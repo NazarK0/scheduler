@@ -3,8 +3,8 @@ extends ../../../global/views/layouts/mainCafedra.pug
 block content
   h2 Розклад
   - if (data)
-    a(href=`/admin/cafedra/schedule/${day}/add` style="color: aqua;") Додати          
-    a(href='#' style="color: purple;") На екран
+    a(href=`/admin/cafedra/schedule/${day}/add` style="color: white;" class="add-btn") Додати          
+    a(href='#' style="color: white;" class="onscreen-btn") На екран
     ul(class="dates")
       each label,index in labels
         li
