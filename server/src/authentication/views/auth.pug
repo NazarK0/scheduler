@@ -10,31 +10,66 @@ html(lang="uk")
   body
     if message
       p=message
-    form(action=action method="post" autocomplete="off" class="signIn")
-      div
-        case type
-          when 'signUp'
-            div
-              input(type="text" name="name" value=name required placeholder="Ім'я")
-              label Категорія:
-              select(name="user_type")
-                each type in user_types
-                  option(value=type)=type
-              input(type="text" name="cafedra" value=cafedra placeholder="Кафедра")
-              input(type="text" name="group" value=group placeholder="Група")
-              input(type="password" name="password" required placeholder="Пароль")
-        - if (type === 'signIn' || type === 'signUp')
+    div(class="container")  
+      form(action=action method="post" autocomplete="off")
+        div
           case type
             when 'signUp'
               div
-                input(type="email" name="email" value=email required placeholder="E-mail")
-                input(type="password" name="password2" required placeholder="Повторіть пароль")
-              a(href="/signin") Увійти
-            when 'signIn'
-              div
-                img(src="http://www.viti.edu.ua/img/viti.png", alt="")
-                div(class="input_group")
-                  input(type="email" name="email" value=email required placeholder="E-mail")
-                  input(type="password" name="password" required placeholder="Пароль")
-                a(href="/signup") Реєстрація
-        button(type="submit" class="signInButton")=title  
+                div(class="row")
+                  div(class="col-25")
+                    label(for="name") Ім'я:
+                  div(class="col-75")  
+                    input(type="text" name="name" value=name required placeholder="Ваше ім'я")
+                div(class="row")
+                  div(class="col-25")
+                    label Категорія:
+                  div(class="col-75")
+                    select(name="user_type")
+                      each type in user_types
+                        option(value=type)=type
+                div(class="row")
+                  div(class="col-25")
+                    label(for="cafedra") Кафедра:
+                  div(class="col-75")
+                    input(type="text" name="cafedra" value=cafedra placeholder="Введіть номер кафедри")
+                div(class="row")
+                  div(class="col-25")
+                    label(for="group") Група:
+                  div(class="col-75")
+                    input(type="text" name="group" value=group placeholder="Введіть номер групи")
+                div(class="row")
+                  div(class="col-25")
+                    label(for="password") Пароль:
+                  div(class="col-75")
+                    input(type="password" name="password" required placeholder="Пароль")
+          - if (type === 'signIn' || type === 'signUp')
+            case type
+              when 'signUp'
+                div
+                  div(class="row")
+                    div(class="col-25")
+                      label(for="email") E-mail:
+                    div(class="col-75")
+                      input(type="email" name="email" value=email required placeholder="Введіть електронну пошту")
+                  div(class="row")
+                    div(class="col-25")
+                      label(for="password") Пароль:
+                    div(class="col-75")
+                      input(type="password" name="password2" required placeholder="Повторіть пароль")
+                a(href="/signin" class="signUp") Увійти
+              when 'signIn'
+                div
+                  img(src="http://www.viti.edu.ua/img/viti.png", alt="")
+                  div(class="row")
+                    div(class="col-25")
+                      label(for="email") E-mail:
+                    div(class="col-75")
+                      input(type="email" name="email" value=email required placeholder="Введіть електронну пошту")
+                    div(class="row")
+                      div(class="col-25")
+                        label(for="password") Пароль:
+                      div(class="col-75")
+                        input(type="password" name="password" required placeholder="Пароль")
+                  a(href="/signup" class="signUp") Реєстрація
+          button(type="submit" class="signInButton")=title  

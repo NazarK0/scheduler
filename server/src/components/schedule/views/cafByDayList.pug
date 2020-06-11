@@ -1,6 +1,8 @@
 extends ../../../global/views/layouts/mainCafedra.pug
 
 block content
+  style
+    include /styles/main.css
   h2 Розклад
   - if (data)
     a(href=`/admin/cafedra/schedule/${day}/add` style="color: white;" class="add-btn") Додати          
