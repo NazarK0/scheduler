@@ -6,12 +6,12 @@ block content
   form(action=`/admin/user/edit`, method="post")
     div
       label(for="name") Ім'я
-      input(id="name" type="text" value=name required)
+      input(id="name" type="text" name="name" value=name required)
     div
       label(for="email") e-mail
-      input(id="email" type="email" value=email required)
+      input(id="email" type="email" name="email" value=email required)
     div
       label(for="password") Пароль
-      input(id="password" type="text" value=password required)    
+      input(id="password" type="password" name="password" value=password required)    
     a(href="/admin/user/change-password") Змінити пароль
     button(type="submit") Зберегти
