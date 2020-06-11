@@ -32,7 +32,7 @@ block content
               td= item.lesson_type
               td= [item.teacher1, item.teacher2, item.teacher1_1, item.teacher2_1]
               td
-                a(href=`/admin/cafedra/schedule/edit/${item.id}`) Редагувати
+                a(href=`/admin/cafedra/schedule/edit/${item.id}` class="edit") Редагувати
                 form(action=`/admin/cafedra/schedule/delete/${item.id}`, method="post")
-                  button(type="submit" class="delete") Видалити
+                  button(type="submit" class="delete") Видалити 
                     i.far.fa-trash-alt 

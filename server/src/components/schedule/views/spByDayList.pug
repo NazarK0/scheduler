@@ -31,7 +31,7 @@ block content
               td= item.lesson_type
               td= [item.teacher1, item.teacher2, item.teacher1_1, item.teacher2_1]
               td
-                a(href=`/admin/sp/schedule/edit/${item._id}`) Редагувати
+                a(href=`/admin/sp/schedule/edit/${item._id}` class="edit") Редагувати
                 form(action=`/admin/sp/schedule/delete/${item.id}`, method="post")
-                  button(type="submit" class="delete") Видалити
+                  button(type="submit" class="delete") Видалити 
                     i.far.fa-trash-alt 
