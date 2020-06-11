@@ -18,7 +18,7 @@ block content
               td= ++counter
               td= item
               td
-                a(href=`/admin/cafedra/subject/edit/${item}`) Редагувати
+                a(href=`/admin/cafedra/subject/edit/${item}` class="edit") Редагувати
                 form(action=`/admin/cafedra/subject/delete/${item}`, method="post")
                   button(type="submit" class="delete") Видалити
                     i.far.fa-trash-alt 

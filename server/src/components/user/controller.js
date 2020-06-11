@@ -58,7 +58,7 @@ module.exports.getChangePassword = async (req, res) => {
   const edited = await User.findById(userId).select({ _id: 0, category: 1 });
   return res
     .status(200)
-    .render(path.join(__dirname, "views", "changePassword"), { category: edited.category });
+    .render(path.join(__dirname, "views", "changePasswordCaf"), { category: edited.category });
 };
 module.exports.postChangePassword = async (req, res) => {
   const id = req.session.passport.user;
@@ -69,16 +69,31 @@ module.exports.postChangePassword = async (req, res) => {
   if (current_password === edited.local.password) {
     if (new_password1 === new_password2 && new_password1 !== "") {
       await User.findByIdAndUpdate(id, { "local.password": new_password1 });
-      return res.status(200).redirect("../..");
+            return res.status(200).redirect("../..");
     } else {
-      return res
+      if(edited.category === userTypes.CAFEDRA){
+        return res
         .status(200)
-        .render(path.join(__dirname, "views", "changePassword"), { category: edited.category });
+        .render(path.join(__dirname, "views", "changePasswordCaf"), { category: edited.category });
+      }
+      else if(edited.category === userTypes.SP){
+        return res
+        .status(200)
+        .render(path.join(__dirname, "views", "changePasswordSp"), { category: edited.category });
+      }
+     
     }
   } else {
-    return res
+    if(edited.category === userTypes.CAFEDRA){
+      return res
       .status(200)
-      .render(path.join(__dirname, "views", "changePassword"), { category: edited.category });
+      .render(path.join(__dirname, "views", "changePasswordCaf"), { category: edited.category });
+    }
+    else if(edited.category === userTypes.SP){
+      return res
+      .status(200)
+      .render(path.join(__dirname, "views", "changePasswordSp"), { category: edited.category });
+    }
   }
 };
 module.exports.getAdd = async (req, res) => {};
