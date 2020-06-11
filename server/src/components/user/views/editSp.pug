@@ -1,17 +1,26 @@
 extends ../../../global/views/layouts/mainSp.pug
 
 block content
+  style
+    include /styles/login.css
   h2 Налаштування
   h4 Особисті дані
-  form(action=`/admin/user/edit`, method="post")
-    div
-      label(for="name") Ім'я
-      input(id="name" type="text" name="name" value=name required)
-    div
-      label(for="email") e-mail
-      input(id="email" type="email" name="email" value=email required)
-    div
-      label(for="password") Пароль
-      input(id="password" type="password" name="password" value=password required)    
-    a(href="/admin/user/change-password") Змінити пароль
-    button(type="submit") Зберегти
+  div(class="container")
+    form(action=`/admin/user/edit`, method="post")
+      div(class="row")
+        div(class="col-25")
+          label(for="name") Ім'я
+        div(class="col-75")
+          input(id="name" type="text" name="name" value=name required)
+      div(class="row")
+        div(class="col-25")
+          label(for="email") e-mail
+        div(class="col-75")
+          input(id="email" type="email" name="email" value=email required)
+      div(class="row")
+        div(class="col-25")
+          label(for="password") Пароль
+        div(class="col-75")
+          input(id="password" type="password" name="password" value=password required)    
+      a(href="/admin/user/change-password" class="signUp") Змінити пароль
+      button(type="submit" class="signInButton") Зберегти

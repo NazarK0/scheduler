@@ -2,13 +2,16 @@ extends ../../../global/views/layouts/mainCafedra.pug
 
 block content
   style
-    include /styles/edit.css
+    include /styles/login.css
   - const title = mode === "edit" ? "Редагувати" : mode === "add" ? "Додати" : "";
   - const action = mode === "edit" ? `/admin/cafedra/subject/edit/${data}`: mode === "add" ? `/admin/cafedra/subject/add` : "/signin";
   - const value_title = data? data : "";
   h2 Редагувати
-  form(action=action method="post" class="edit-container")
-    div
-      label Дисципліна*:
-      input(type="text" name="new_title" value=value_title required)
-    button(type="submit" class="save-btn") Зберегти
+  div(class="container")  
+    form(action=action method="post")
+      div(class="row")
+        div(class="col-25")
+          label Дисципліна*:
+        div(class="col-25")  
+          input(type="text" name="new_title" value=value_title required)
+      button(type="submit" class="signInButton") Зберегти

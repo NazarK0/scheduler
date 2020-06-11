@@ -251,8 +251,8 @@ module.exports.getShowCafDay = async (req, res) => {
         { cafedra: cafedra.cafedra },
         { teacher1: classrooms.classrooms },
         { teacher2: classrooms.classrooms },
-        { teacher3: classrooms.classrooms },
-        { teacher4: classrooms.classrooms },
+        { teacher1_1: classrooms.classrooms },
+        { teacher2_1: classrooms.classrooms },
       ])
       .where({ date: dates[idx] })
       .select({
@@ -398,7 +398,6 @@ module.exports.postCafedraDelete = async (req, res) => {
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getClassroom=async(req,res)=>{
-  console.log('in');
 
   const {
     kaf

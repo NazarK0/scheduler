@@ -7,6 +7,8 @@ const cadetSchema = mongoose.Schema({
     unique: true,
     dropDups: true,
   },
+  name:String,
+  surname:String,
   local: {
     email: String,
     password: String,

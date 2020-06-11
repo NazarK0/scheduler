@@ -4,15 +4,16 @@ block content
   - let counter = 0;
   h2 Аудиторії
   - if (data)
-    table
-      thead
-        tr
-          th №п/п 
-          th Кафедра 
-          th Аудиторії
-      tbody
-        each item in data
+    div(table-wrapper)  
+      table(class="fl-table")
+        thead
           tr
-            td= ++counter
-            td= item.name
-            td= item.classrooms
+            th №п/п 
+            th Кафедра 
+            th Аудиторії
+        tbody
+          each item in data
+            tr
+              td= ++counter
+              td= item.name
+              td= item.classrooms
