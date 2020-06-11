@@ -4,7 +4,7 @@ block content
   h2 Розклад
   - if (data)
     a(href=`/admin/cafedra/schedule/${day}/add` style="color: white;" class="add-btn") Додати          
-    a(href='#' style="color: white;" class="onscreen-btn") На екран
+    a(href=`http://${domain}/cafedra/${cafedra}/${Number(day)+1}` style="color: white;" class="onscreen-btn" target="_blank") На екран
     ul(class="dates")
       each label,index in labels
         li

@@ -9,6 +9,7 @@ const User = require("../user/model");
 const Cafedra = require("../cafedra/model");
 const { userTypes } = require("../../global/constants");
 const hasAccess = require("../../API/hasAccess");
+const {domain} = require("../../../config/config.json")
 
 module.exports.getShow = async (req, res) => {
   const userId = req.session.passport.user;
@@ -227,6 +228,8 @@ module.exports.getShowCafWeek = async (req, res) => {
     return res.status(200).render(path.join(__dirname, "views", "cafByDayList"), {
       data: schedule,
       labels,
+      cafedra: cafedra.cafedra,
+      domain,
       day: 0,
     });
   } else return res.status(200).redirect("/signin");
@@ -278,6 +281,8 @@ module.exports.getShowCafDay = async (req, res) => {
       data: schedule,
       labels,
       day: idx,
+      cafedra: cafedra.cafedra,
+      domain,
     });
   } else return res.status(200).redirect("/signin");
 };
