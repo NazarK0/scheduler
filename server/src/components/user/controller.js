@@ -37,7 +37,15 @@ module.exports.getEdit = async (req, res) => {
     }
   }
 };
-module.exports.postEdit = async (req, res) => {};
+module.exports.postEdit = async (req, res) => {
+  const userId = req.session.passport.user;
+  const {name,email,password}=req.body;
+  const user = await User.findById(userId);
+  if(password === user.local.password){
+    await User.findByIdAndUpdate(userId,{name,email})
+  }
+  return res.status(200).redirect("..")
+};
 module.exports.postDelete = async (req, res) => {
   const { id } = req.params;
   const deleted = await User.findByIdAndDelete(id);
@@ -56,6 +64,7 @@ module.exports.postChangePassword = async (req, res) => {
   const id = req.session.passport.user;
   const edited = await User.findById(id);
   const { current_password, new_password1, new_password2 } = req.body;
+  console.log('change pass')
 
   if (current_password === edited.local.password) {
     if (new_password1 === new_password2 && new_password1 !== "") {
