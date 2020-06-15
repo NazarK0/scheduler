@@ -2,21 +2,20 @@ extends ../../../global/views/layouts/mainSp.pug
 
 block content
   - let counter = 0;
-  h2 Аудиторії
+  h2 Навчальні групи
   - if (data)
-    a(href="#") Додати
     ul(class="auts")
         each label,index in labels
           li
-            a(href='/admin/sp/cafedra/classrooms/'+index)=label + ' кафедра'
-    div(table-wrapper)  
+            a(href=`#`)=label + ' факультет'
+    div(class="table-wrapper")  
       table(class="fl-table")
         thead
           tr
             th №п/п 
-            th Аудиторія 
-            th Місць
-            th Опис
+            th Група
+            th За списком
+            th В наявності
             th Дії
         tbody
           each item in data
@@ -26,7 +25,7 @@ block content
               td в процесі розробки
               td в процесі розробки
               td 
-                a(href=`/admin/sp/сlassroom/edit/${item}` class="edit") Редагувати
-                form(action=`/admin/sp/classroom/delete/${item}`, method="post")
+                a(href=`#` class="edit") Редагувати
+                form(action=`#`, method="post")
                   button(type="submit" class="delete") Видалити
                     i.far.fa-trash-alt

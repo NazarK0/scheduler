@@ -6,6 +6,7 @@ const { userTypes } = require("../../global/constants");
 const hasAccess = require("../../API/hasAccess");
 
 module.exports.getAllClassrooms = async (req, res) => {
+  //denis подивись getAllSubjects
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
     const cafedras = await Cafedra.find({
@@ -17,9 +18,41 @@ module.exports.getAllClassrooms = async (req, res) => {
       classrooms: 2,
     });
 
+    const labels = await Schedule.find({
+      cafedra: { $ne: null },
+    })
+      .select({ _id: 0, cafedra: 1 })
+      .distinct("cafedra");
+
+    labels.sort((a, b) => Number(a) - Number(b));
+
     return res
       .status(200)
-      .render(path.join(__dirname, "views", "spClassroomsList"), { data: cafedras });
+      .render(path.join(__dirname, "views", "spClassroomsList"), { data: cafedras, labels });
+  } else return res.status(200).redirect("/signin");
+};
+module.exports.getAllClassroomsByCafedra = async (req, res) => {
+  //denis подивись getAllSubjectsByCafedra
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.SP)) {
+    const cafedras = await Cafedra.find({
+      name: { $nin: [null] },
+      classrooms: { $nin: [null] },
+    }).select({
+      _id: 0,
+      name: 1,
+      classrooms: 2,
+    });
+
+    const labels = await Schedule.find({
+      cafedra: { $ne: null },
+    })
+      .select({ _id: 0, cafedra: 1 })
+      .distinct("cafedra");
+
+    return res
+      .status(200)
+      .render(path.join(__dirname, "views", "spClassroomsList"), { data: cafedras, labels });
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getAllSubjects = async (req, res) => {
@@ -71,6 +104,24 @@ module.exports.getCafedraClassrooms = async (req, res) => {
     try {
       cafedra.classrooms.sort();
       return res.status(200).render(path.join(__dirname, "views", "cafedraClassroomsList"), {
+        data: cafedra.classrooms,
+      });
+    } catch (err) {
+      return res.status(200).render(path.join(__dirname, "views", "cafedraClassroomsList"));
+    }
+  } else return res.status(200).redirect("/signin");
+};
+module.exports.getCafedraClassrooms_secret = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const user = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+    const cafedra = await Cafedra.findOne({ name: user.cafedra }).select({
+      _id: 0,
+      classrooms: 1,
+    });
+    try {
+      cafedra.classrooms.sort();
+      return res.status(200).render(path.join(__dirname, "views", "cafedraClassroomsList_secret"), {
         data: cafedra.classrooms,
       });
     } catch (err) {
@@ -167,6 +218,26 @@ module.exports.postDeleteClassroom = async (req, res) => {
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getCafedraSubjects = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const user = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+    const cafedra = await Cafedra.findOne({ name: user.cafedra }).select({
+      _id: 0,
+      subjects: 1,
+    });
+
+    try {
+      cafedra.subjects.sort();
+
+      return res
+        .status(200)
+        .render(path.join(__dirname, "views", "cafedraSubjectsList"), { data: cafedra.subjects });
+    } catch (err) {
+      return res.status(200).render(path.join(__dirname, "views", "cafedraSubjectsList"));
+    }
+  } else return res.status(200).redirect("/signin");
+};
+module.exports.getCafedraSubjects_secret = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
     const user = await User.findById(userId).select({ _id: 0, cafedra: 1 });

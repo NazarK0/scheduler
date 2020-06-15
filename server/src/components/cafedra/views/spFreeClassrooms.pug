@@ -1,21 +1,25 @@
-extends ../../../global/views/layouts/mainCafedra.pug
+extends ../../../global/views/layouts/mainSp.pug
 
 block content
   - let counter = 0;
-  h2 Аудиторії
+  h2 Вільні аудиторії
   - if (data)
     div(class="table-wrapper")  
       table(class="fl-table")
         thead
           tr
             th №п/п 
-            th Аудиторії
-            th Кількість місць
+            th Пара
+            th Кафедра
+            th Аудиторія
+            th Місць
             th Опис
         tbody
           each item in data
             tr
               td= ++counter
-              td= item
+              td в процесі розробки
+              td в процесі розробки
+              td в процесі розробки
               td в процесі розробки
               td в процесі розробки
