@@ -92,7 +92,7 @@ async function FreeClassRoom(req,res){
         })
         
         const all_rooms_obj=await ClassRoom.find().where({
-            name:{ $ne:set_couples_classrooms}
+            name:{ $nin:set_couples_classrooms}
         });
         res.status(200);
         

@@ -49,6 +49,7 @@ module.exports.getAllClassroomsByCafedra = async (req, res) => {
     })
       .select({ _id: 0, cafedra: 1 })
       .distinct("cafedra");
+      labels.sort((a, b) => Number(a) - Number(b));
 
     return res
       .status(200)
