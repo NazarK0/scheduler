@@ -4,8 +4,7 @@ const Schedule=require('../components/schedule/model');
  
 
 async function postSelectedUserType(req,res) {
-    console.log('in');
-
+    
     const{
         type
     }=req.body
@@ -23,10 +22,12 @@ try {
            res.status(200).json(result_array);    
         break;
         case '1':
-            console.log('in2block');
             const all_cafedra=await Cafedra.find().select({
                 name:1,
                 _id:0
+            }).sort({
+                name:-1
+                
             });
             res.status(200).json(all_cafedra);
         
