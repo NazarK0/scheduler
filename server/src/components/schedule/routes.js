@@ -31,15 +31,30 @@ router
 
 router.post(`/sp/${routeGroup}/delete/:id`, authenticationMiddleware(), controller.postSpDelete);
 
-router.post(`/${routeGroup}/:kaf/:day`,controller.getSheduleForCafedra);
-router.get(`/${routeGroup}/:kaf`,controller.getClassroom);
-router.get(`/${routeGroup}/:kaf/:day/any`,controller.getAnySchedule);
-  router.get(`/cafedra/${routeGroup}/show`, authenticationMiddleware(), controller.getShowCafWeek);
-  router.get(`/cafedra/${routeGroup}/show/:idx`, authenticationMiddleware(), controller.getShowCafDay);
-  router
-    .route(`/cafedra/${routeGroup}/edit/:id`)
-    .get(authenticationMiddleware(), controller.getCafedraEdit)
-    .post(authenticationMiddleware(), controller.postCafedraEdit);
+router.post(`/${routeGroup}/:kaf/:day`, controller.getSheduleForCafedra);
+router.get(`/${routeGroup}/:kaf`, controller.getClassroom);
+router.get(`/${routeGroup}/:kaf/:day/any`, controller.getAnySchedule);
+router.get(
+  `/cafedra/${routeGroup}/show/secret-page`,
+  authenticationMiddleware(),
+  controller.getShowCafWeek_secret
+);
+router.get(
+  `/cafedra/${routeGroup}/show/:idx/secret-page`,
+  authenticationMiddleware(),
+  controller.getShowCafDay_secret
+);
+router.get(`/cafedra/${routeGroup}/show`, authenticationMiddleware(), controller.getShowCafWeek);
+router.get(
+  `/cafedra/${routeGroup}/show/:idx`,
+  authenticationMiddleware(),
+  controller.getShowCafDay
+);
+
+router
+  .route(`/cafedra/${routeGroup}/edit/:id`)
+  .get(authenticationMiddleware(), controller.getCafedraEdit)
+  .post(authenticationMiddleware(), controller.postCafedraEdit);
 router
   .route(`/cafedra/${routeGroup}/:day/add`)
   .get(authenticationMiddleware(), controller.getCafedraAdd)

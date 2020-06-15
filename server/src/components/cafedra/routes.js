@@ -5,11 +5,21 @@ const authenticationMiddleware = require("../../authentication/middleware");
 const routeGroup = "cafedra";
 
 router.get(`/sp/${routeGroup}/classrooms`, authenticationMiddleware(), controller.getAllClassrooms);
+router.get(
+  `/sp/${routeGroup}/classrooms/:id`,
+  authenticationMiddleware(),
+  controller.getAllClassroomsByCafedra
+);
 router.get(`/sp/${routeGroup}/subjects`, authenticationMiddleware(), controller.getAllSubjects);
 router.get(
   `/sp/${routeGroup}/subjects/:id`,
   authenticationMiddleware(),
   controller.getAllSubjectsByCafedra
+);
+router.get(
+  `/${routeGroup}/classrooms/secret-page`,
+  authenticationMiddleware(),
+  controller.getCafedraClassrooms_secret
 );
 router.get(
   `/${routeGroup}/classrooms`,
@@ -29,6 +39,7 @@ router.post(
   authenticationMiddleware(),
   controller.postDeleteClassroom
 );
+router.get(`/${routeGroup}/subjects/secret-page`, authenticationMiddleware(), controller.getCafedraSubjects_secret);
 router.get(
   `/${routeGroup}/subjects`,
   authenticationMiddleware(),

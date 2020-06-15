@@ -234,6 +234,56 @@ module.exports.getShowCafWeek = async (req, res) => {
     });
   } else return res.status(200).redirect("/signin");
 };
+module.exports.getShowCafWeek_secret = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const cafedra = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+    const classrooms = await Cafedra.findOne({ name: cafedra.cafedra }).select({
+      _id: 0,
+      classrooms: 1,
+    });
+
+    const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
+    const schedule = await Schedule.find()
+      .or([
+        { classroom1: classrooms.classrooms },
+        { classroom2: classrooms.classrooms },
+        { cafedra: cafedra.cafedra },
+      ])
+      .where({ date: dates[0] })
+      .select({
+        _id: 1,
+        group: 2,
+        couple: 3,
+        subject: 4,
+        lesson_type: 5,
+        teacher1: 6,
+        teacher2: 7,
+        teacher1_1: 8,
+        teacher2_1: 9,
+        classroom1: 10,
+        classroom2: 11,
+      })
+      .sort({ couple: "asc", group: "asc" });
+
+    const dateTimeFormat = new Intl.DateTimeFormat("uk", {
+      year: "numeric",
+      month: "long",
+      day: "2-digit",
+    });
+    const labels = dates.map((date) => dateTimeFormat.format(date));
+
+    
+
+    return res.status(200).render(path.join(__dirname, "views", "cafByDayList_secret"), {
+      data: schedule,
+      labels,
+      cafedra: cafedra.cafedra,
+      domain,
+      day: 0,
+    });
+  } else return res.status(200).redirect("/signin");
+};
 module.exports.getShowCafDay = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
@@ -278,6 +328,58 @@ module.exports.getShowCafDay = async (req, res) => {
     const labels = dates.map((date) => dateTimeFormat.format(date));
 
     return res.status(200).render(path.join(__dirname, "views", "cafByDayList"), {
+      data: schedule,
+      labels,
+      day: idx,
+      cafedra: cafedra.cafedra,
+      domain,
+    });
+  } else return res.status(200).redirect("/signin");
+};
+module.exports.getShowCafDay_secret = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const { idx } = req.params;
+    const cafedra = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+    const classrooms = await Cafedra.findOne({ name: cafedra.cafedra }).select({
+      _id: 0,
+      classrooms: 1,
+    });
+    const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
+    const schedule = await Schedule.find()
+      .or([
+        { classroom1: classrooms.classrooms },
+        { classroom2: classrooms.classrooms },
+        { cafedra: cafedra.cafedra },
+        { teacher1: classrooms.classrooms },
+        { teacher2: classrooms.classrooms },
+        { teacher1_1: classrooms.classrooms },
+        { teacher2_1: classrooms.classrooms },
+      ])
+      .where({ date: dates[idx] })
+      .select({
+        group: 1,
+        couple: 2,
+        subject: 3,
+        lesson_type: 4,
+        teacher1: 5,
+        teacher2: 6,
+        teacher1_1: 7,
+        teacher2_1: 8,
+        classroom1: 9,
+        classroom2: 10,
+        _id: 11,
+      })
+      .sort({ couple: "asc", group: "asc" });
+
+    const dateTimeFormat = new Intl.DateTimeFormat("uk", {
+      year: "numeric",
+      month: "long",
+      day: "2-digit",
+    });
+    const labels = dates.map((date) => dateTimeFormat.format(date));
+
+    return res.status(200).render(path.join(__dirname, "views", "cafByDayList_secret"), {
       data: schedule,
       labels,
       day: idx,
