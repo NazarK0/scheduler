@@ -8,6 +8,7 @@ const user_routes = require("../components/user/routes");
 const schedule_routes = require("../components/schedule/routes");
 const cafedra_routes = require("../components/cafedra/routes");
 const teacher_routes=require('../components/teacher/route');
+const classroom_routes=require('../components/classroom/route');
 const global=require('../global/routes');
 //const User = require('../components/user/model')
 
@@ -16,7 +17,7 @@ module.exports = (app) => {
     return res.status(200).redirect('/signin');
   });
   app.use("/", [auth_routes,mobile_routes,global,teacher_routes]);
-  app.use("/admin", [user_routes, schedule_routes, cafedra_routes]);
+  app.use("/admin", [user_routes, schedule_routes, cafedra_routes,classroom_routes]);
   app.get("/admin", authenticationMiddleware(), mainController.getMainPage);
 
   //app.use("/admin", [auth_routes]);

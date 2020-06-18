@@ -32,7 +32,6 @@ router
 router.post(`/sp/${routeGroup}/delete/:id`, authenticationMiddleware(), controller.postSpDelete);
 
 router.post(`/${routeGroup}/:kaf/:day`, controller.getSheduleForCafedra);
-router.get(`/${routeGroup}/:kaf`, controller.getClassroom);
 router.get(`/${routeGroup}/:kaf/:day/any`, controller.getAnySchedule);
 router.get(
   `/cafedra/${routeGroup}/show/secret-page`,

@@ -6,7 +6,7 @@ const routeGroup = "cafedra";
 
 router.get(`/sp/${routeGroup}/classrooms`, authenticationMiddleware(), controller.getAllClassrooms);
 router.get(
-  `/sp/${routeGroup}/classrooms/:id`,
+  `/sp/${routeGroup}/:cafedra/classrooms`,
   authenticationMiddleware(),
   controller.getAllClassroomsByCafedra
 );

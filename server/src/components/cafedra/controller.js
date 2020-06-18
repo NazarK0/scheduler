@@ -1,59 +1,46 @@
 const path = require("path");
 const Cafedra = require("../cafedra/model");
 const Schedule = require("../schedule/model");
+const ClassRoom=require('../classroom/model');
 const User = require("../user/model");
 const { userTypes } = require("../../global/constants");
 const hasAccess = require("../../API/hasAccess");
 
 module.exports.getAllClassrooms = async (req, res) => {
+  const{
+    cafedra
+
+  }=req.params
   //denis подивись getAllSubjects
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
-    const cafedras = await Cafedra.find({
-      name: { $nin: [null] },
-      classrooms: { $nin: [null] },
-    }).select({
-      _id: 0,
-      name: 1,
-      classrooms: 2,
-    });
 
-    const labels = await Schedule.find({
-      cafedra: { $ne: null },
-    })
-      .select({ _id: 0, cafedra: 1 })
-      .distinct("cafedra");
 
-    labels.sort((a, b) => Number(a) - Number(b));
+    let all_caf=await Cafedra.find();
+    
+   
+
+
 
     return res
       .status(200)
-      .render(path.join(__dirname, "views", "spClassroomsList"), { data: cafedras, labels });
+      .render(path.join(__dirname, "views", "spClassroomsList"), { labels:all_caf });
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getAllClassroomsByCafedra = async (req, res) => {
-  //denis подивись getAllSubjectsByCafedra
+  const {cafedra}=req.params;
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
-    const cafedras = await Cafedra.find({
-      name: { $nin: [null] },
-      classrooms: { $nin: [null] },
-    }).select({
-      _id: 0,
-      name: 1,
-      classrooms: 2,
-    });
 
-    const labels = await Schedule.find({
-      cafedra: { $ne: null },
-    })
-      .select({ _id: 0, cafedra: 1 })
-      .distinct("cafedra");
-      labels.sort((a, b) => Number(a) - Number(b));
+    let all_rooms_by_cafedra=await ClassRoom.find().where({
+      cafedra
+    });
+    let all_caf=await Cafedra.find().sort({name:1});
+    
 
     return res
       .status(200)
-      .render(path.join(__dirname, "views", "spClassroomsList"), { data: cafedras, labels });
+      .render(path.join(__dirname, "views", "spClassroomsList"), { data: all_rooms_by_cafedra, labels:all_caf,cafedra});
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getAllSubjects = async (req, res) => {

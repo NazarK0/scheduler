@@ -175,8 +175,10 @@ module.exports.postUpload = async (req, res) => {
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getSheduleForCafedra = async (req, res) => {
+  console.log('in');
  
     const { kaf, day } = req.params;
+    console.log(kaf,day);
     const result = await getShedule(kaf, day);
     res.status(200).json(result);
  

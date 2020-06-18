@@ -9,7 +9,6 @@ block content
         thead
           tr
             th №п/п 
-            th Пара
             th Кафедра
             th Аудиторія
             th Місць
@@ -18,8 +17,8 @@ block content
           each item in data
             tr
               td= ++counter
-              td в процесі розробки
-              td в процесі розробки
-              td в процесі розробки
-              td в процесі розробки
-              td в процесі розробки
+              td= item.cafedra
+              td= item.name
+              td= item.seats_place
+              td= item.description
+              

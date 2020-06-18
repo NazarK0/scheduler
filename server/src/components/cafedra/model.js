@@ -6,10 +6,6 @@ const CafedraSchema = new Schema({
     unique: true,
     dropDups:true
   },
-  classrooms: {
-    type: Array,
-    of: String,
-  },
   subjects:{
     type: Array,
     of: String

@@ -3,12 +3,13 @@ extends ../../../global/views/layouts/mainSp.pug
 block content
   - let counter = 0;
   h2 Аудиторії
-  - if (data)
-    a(href="#") Додати
+  - if (labels)
+    a(href=`/admin/sp/cafedra/${cafedra}/classrooms/add`) Додати
     ul(class="auts")
         each label,index in labels
           li
-            a(href='/admin/sp/cafedra/classrooms/'+index)=label + ' кафедра'
+            a(href=`/admin/sp/cafedra/${label.name}/classrooms`)=label.name + ' кафедра'
+  - if (data)
     div(table-wrapper)  
       table(class="fl-table")
         thead
@@ -22,11 +23,11 @@ block content
           each item in data
             tr
               td= ++counter
-              td в процесі розробки
-              td в процесі розробки
-              td в процесі розробки
+              td= item.name
+              td= item.seats_place
+              td= item.description
               td 
-                a(href=`/admin/sp/сlassroom/edit/${item}` class="edit") Редагувати
-                form(action=`/admin/sp/classroom/delete/${item}`, method="post")
+                a(href=`/admin/sp/cafedra/${item.cafedra}/classrooms/edit/${item.id}` class="edit") Редагувати
+                form(action=`/admin/sp/cafedra/${cafedra}/classrooms/delete/${item.id}`, method="post")
                   button(type="submit" class="delete") Видалити
                     i.far.fa-trash-alt

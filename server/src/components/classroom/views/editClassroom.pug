@@ -1,0 +1,31 @@
+extends ../../../global/views/layouts/mainSp.pug
+
+
+block content
+
+  style 
+    include /styles/login.css
+  - const title_page = mode === "edit" ? "Редагувати" : mode === "add" ? "Додати" : "";
+  - const action = mode === "edit" ? `/admin/sp/cafedra/${cafedra}/classrooms/edit/${id_classroom}`: mode === "add" ? `/admin/sp/cafedra/${cafedra}/classrooms/add` : "/signin";
+  - const value_name = data? data.name : "";
+  - const value_seats_place = data? data.seats_place : "";
+  - const value_description = data? data.description : "";
+  h2=title_page
+  div(class="container")
+    form(action=action method="post")
+      div(class="row")
+        div(class="col-25")
+          label Аудиторія*:
+        div(class="col-75")
+          input(type="text" name="name" value=value_name required)
+      div(class="row")
+        div(class="col-25")
+          label Місць*:
+        div(class="col-75")
+          input(type="number" name="seats_place" value=value_seats_place required)
+      div(class="row")
+        div(class="col-25")
+          label Опис:
+        div(class="col-75")
+          textarea( name="description"  required)= value_description
+      button(type="submit" class="signInButton") Зберегти
