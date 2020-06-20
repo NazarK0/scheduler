@@ -1,0 +1,23 @@
+extends ../../../global/views/layouts/mainCafedra.pug
+
+block content
+  style
+    include /styles/login.css
+  - const page_title = mode === "edit" ? "Редагувати" : mode === "add" ? "Додати" : "";
+  - const action = mode === "edit" ? `/admin/sp/subject/cafedra/${cafedra_id}/edit/${data.id}`: mode === "add" ? `/admin/sp/subject/cafedra/${cafedra_id}/add` : "/signin";
+  - const value_title = data? data.title : "";
+  - const value_abbreviation = data? data.abbreviation : "";
+  h2=page_title
+  div(class="container")  
+    form(action=action method="post")
+      div(class="row")
+        div(class="col-25")
+          label Аббревіатура*:
+        div(class="col-25")  
+          input(type="text" name="abbreviation" value=value_abbreviation required)
+      div(class="row")
+        div(class="col-25")
+          label Повна назва:
+        div(class="col-25")  
+          input(type="text" name="title" value=value_title)
+      button(type="submit" class="signInButton") Зберегти

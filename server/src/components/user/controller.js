@@ -71,7 +71,8 @@ module.exports.postChangePassword = async (req, res) => {
       await User.findByIdAndUpdate(id, { "local.password": new_password1 });
             return res.status(200).redirect("../..");
     } else {
-      if(edited.category === userTypes.CAFEDRA){
+      if (edited.category === userTypes.CAFEDRA) {
+        co
         return res
         .status(200)
         .render(path.join(__dirname, "views", "changePasswordCaf"), { category: edited.category });

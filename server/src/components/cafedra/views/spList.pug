@@ -1,0 +1,35 @@
+extends ../../../global/views/layouts/mainSp.pug
+
+block content
+  - let counter = 0;
+  h2 Кафедри
+  a(href=`/admin/sp/cafedra/add`) Додати
+  form(action=`/admin/sp/cafedra/import`, method="post")
+    button(type="submit" ) Імпорт з розкладу
+      i.far.fa-trash-alt 
+  - if (data)
+    div(class="table-wrapper")  
+      table(class="fl-table")
+        thead
+          tr
+            th №п/п 
+            th Номер
+            th Повна назва
+            th Аудиторії
+            th Предмети
+            th Дії
+        tbody
+          each item in data
+            tr
+              td= ++counter
+              td= item.number
+              td= item.title
+              td
+                a(href=`/admin/sp/classroom/cafedra/${item.id}/show`) Відкрити
+              td
+                a(href=`/admin/sp/subject/cafedra/${item.id}/show`) Відкрити
+              td
+                a(href=`/admin/sp/cafedra/edit/${item.id}` class="edit") Редагувати
+                form(action=`/admin/sp/cafedra/delete/${item.id}`, method="post")
+                  button(type="submit" class="delete") Видалити
+                    i.far.fa-trash-alt 

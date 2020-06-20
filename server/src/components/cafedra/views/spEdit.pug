@@ -1,0 +1,23 @@
+extends ../../../global/views/layouts/mainSp.pug
+
+block content
+  style
+    include /styles/login.css
+  - const page_title = mode === "edit" ? "Редагувати" : mode === "add" ? "Додати" : "";
+  - const action = mode === "edit" ? `/admin/sp/cafedra/edit/${data.id}`: mode === "add" ? `/admin/sp/cafedra/add` : "/signin";
+  - const value_number = data? data.number : "";
+  - const value_title = data? data.title : "";
+  h2=page_title
+  div(class="container")  
+    form(action=action method="post")
+      div(class="row")
+        div(class="col-25")
+          label Номер*:
+        div(class="col-25")  
+          input(type="text" name="number" value=value_number required)
+      div(class="row")
+        div(class="col-25")
+          label Повна назва:
+        div(class="col-25")  
+          input(type="text" name="title" value=value_title)
+      button(type="submit" class="submitButton") Зберегти
