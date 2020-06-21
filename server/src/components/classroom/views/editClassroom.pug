@@ -6,9 +6,9 @@ block content
   style 
     include /styles/login.css
   - const title_page = mode === "edit" ? "Редагувати" : mode === "add" ? "Додати" : "";
-  - const action = mode === "edit" ? `/admin/sp/cafedra/${cafedra}/classrooms/edit/${id_classroom}`: mode === "add" ? `/admin/sp/cafedra/${cafedra}/classrooms/add` : "/signin";
+  - const action = mode === "edit" ? `/admin/sp/classroom/cafedra/${cafedra_id}/edit/${data.id}`: mode === "add" ? `/admin/sp/classroom/cafedra/${cafedra_id}/add` : "/signin";
   - const value_name = data? data.name : "";
-  - const value_seats_place = data? data.seats_place : "";
+  - const value_seats = data? data.seats : "";
   - const value_description = data? data.description : "";
   h2=title_page
   div(class="container")
@@ -20,12 +20,12 @@ block content
           input(type="text" name="name" value=value_name required)
       div(class="row")
         div(class="col-25")
-          label Місць*:
+          label Місць:
         div(class="col-75")
-          input(type="number" name="seats_place" value=value_seats_place required)
+          input(type="number" name="seats" value=value_seats)
       div(class="row")
         div(class="col-25")
           label Опис:
         div(class="col-75")
-          textarea( name="description"  required)= value_description
+          textarea( name="description")= value_description
       button(type="submit" class="signInButton") Зберегти

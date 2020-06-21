@@ -4,7 +4,7 @@ const classroomSchema = new Schema({
  
     cafedra:String,
     name:String,
-    seats_place:Number,
+    seats:Number,
     description:String
 
 })

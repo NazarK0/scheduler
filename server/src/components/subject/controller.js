@@ -22,16 +22,16 @@ const getSpShowByCafedra = async (req, res) => {
     const { id } = req.params;
     const labels = await Cafedra.find({ number: { $ne: null } });
     const { number } = await Cafedra.findById(id).select({ _id: 0, number: 1 });
-    console.log(number)
+
     labels.sort((a, b) => Number(a.number) - Number(b.number));
 
-    const subjects = await Subject.find({ cafedra: id });
+    const subjects = await Subject.find({ cafedra: id }).sort({"abbreviation": "asc"});
 
     return res.status(200).render(path.join(__dirname, "views", "spSubjectsList"), {
       data: subjects,
       labels,
       cafedra_id: id,
-      current:number
+      current_cafedra:number
     });
   } else return res.status(200).redirect("/signin");
 };
@@ -42,8 +42,8 @@ const postSpImportFromSchedule = async (req, res) => {
     const { id } = req.params;
     const { number } = await Cafedra.findById(id).select({ _id: 0, number: 1 });
 
-    const current = await Subject.find()
-      .select({ _id: 0, abbreviation: 1 })
+    const current = await Subject.find({ cafedra: id })
+      .select({ _id: 0, name: 1 })
       .distinct("abbreviation");
     const subjects = await Schedule.find({ cafedra: number, subject: { $nin: [null, ...current] } })
       .select({ _id: 0, subject: 1 })

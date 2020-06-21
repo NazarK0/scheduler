@@ -1,0 +1,49 @@
+extends ../../../global/views/layouts/mainSp.pug
+
+
+block content
+
+  style 
+    include /styles/login.css
+  - const title_page = mode === "edit" ? "Редагувати" : mode === "add" ? "Додати" : "";
+  - const action = mode === "edit" ? `/admin/sp/couple/edit/${data.id}`: mode === "add" ? `/admin/sp/couple/add` : "/signin";
+  - const value_number = data? data.number : "";
+  - const value_timeFrom = data? data.timeFrom : "";
+  - const value_timeTo = data? data.timeTo : "";
+  - const value_innerBreaks = data? data.innerBreaks : "";
+  - const value_cafedras = data? data.cafedras : "";
+  - const value_description = data? data.description : "";
+  h2=title_page
+  div(class="container")
+    form(action=action method="post")
+      div(class="row")
+        div(class="col-25")
+          label Номер(0-10)*:
+        div(class="col-75")
+          input(type="number" min=0 max=10 name="number" value=value_number required)
+      div(class="row")
+        div(class="col-25")
+          label Початок(гг:хх):
+        div(class="col-75")
+          input(type="text" name="timeFrom" value=value_timeFrom pattern="(([0-1][0-9])|([2][0-3])):([0-5][0-9])")
+      div(class="row")
+        div(class="col-25")
+          label Кінець(гг:хх):
+        div(class="col-75")
+          input(type="text" name="timeTo" value=value_timeTo pattern="(([0-1][0-9])|([2][0-3])):([0-5][0-9])")
+      div(class="row")
+        div(class="col-25")
+          label Перерви протягом пари:
+        div(class="col-75")
+          input(type="text" name="breaks" value=value_innerBreaks placeholder="початок(гг:хх)/тривалість(хв),початок/тривалість,...")
+      div(class="row")
+        div(class="col-25")
+          label Кафедри:
+        div(class="col-75")
+          input(type="text" name="cafedras" value=value_cafedras placeholder="пусто=усі в іншому випадку 1,12,17..." pattern="^((( *)[0-9]+( *))(( *),( *)[0-9]+)*( *,)?)$")
+      div(class="row")
+        div(class="col-25")
+          label Примітка:
+        div(class="col-75")
+          textarea( name="description")= value_description
+      button(type="submit" class="signInButton") Зберегти

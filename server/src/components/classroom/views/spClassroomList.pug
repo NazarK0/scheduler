@@ -1,0 +1,38 @@
+extends ../../../global/views/layouts/mainSp.pug
+
+block content
+  - let counter = 0;
+  - const page_title ="Аудиторії" + (current_cafedra ? ` ${current_cafedra} кафедри`: "");
+  h2= page_title
+  - if(labels)
+    ul(class="auts")
+      each label in labels
+        li
+          a(href=`/admin/sp/classroom/cafedra/${label.id}/show`)=label.number + ' кафедра'
+  - if (cafedra_id)
+    a(href=`/admin/sp/classroom/cafedra/${cafedra_id}/add`) Додати
+    //- form(action=`/admin/sp/classroom/cafedra/${cafedra_id}/import`, method="post")
+    //-   button(type="submit" ) Імпорт з розкладу
+    //-     i.far.fa-trash-alt 
+  - if (data)
+     div(table-wrapper)  
+      table(class="fl-table")
+        thead
+          tr
+            th №п/п 
+            th Аудиторія 
+            th Місць
+            th Опис
+            th Дії
+        tbody
+          each item in data
+            tr
+              td= ++counter
+              td= item.name
+              td= item.seats
+              td= item.description
+              td
+                a(href=`/admin/sp/classroom/cafedra/${cafedra_id}/edit/${item.id}` class="edit") Редагувати
+                form(action=`/admin/sp/classroom/cafedra/${cafedra_id}/delete/${item.id}`, method="post")
+                  button(type="submit" class="delete") Видалити
+                    i.far.fa-trash-alt 

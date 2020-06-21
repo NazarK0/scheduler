@@ -2,7 +2,8 @@ extends ../../../global/views/layouts/mainSp.pug
 
 block content
   - let counter = 0;
-  h2=`Предмети ${current} кафедри`
+  - const page_title ="Предмети" + (current_cafedra ? ` ${current_cafedra} кафедри`: "");
+  h2= page_title
   - if(labels)
     ul(class="auts")
       each label in labels

@@ -1,0 +1,38 @@
+extends ../../../global/views/layouts/mainSp.pug
+
+block content
+  h2 Пари
+  a(href=`/admin/sp/couple/add`) Додати
+  - if (data)
+    div(table-wrapper)  
+      table(class="fl-table")
+        thead
+          tr
+            th № 
+            th Початок 
+            th Перерви
+            th Кінець
+            th Кафедри
+            th Примітка
+            th Дії
+        tbody
+          each item in data
+            - const cafedras = (item.cafedras !=="" ? item.cafedras : "Усі");
+            tr
+              td= item.number
+              td= item.timeFrom
+              td
+                - if (item.innerBreaks.length)
+                  each couple_break in item.innerBreaks
+                    p=`${couple_break.breakFrom} - ${couple_break.breakTo}`
+                - else
+                  p Відсутні
+
+              td= item.timeTo
+              td= cafedras
+              td= item.description
+              td
+                a(href=`/admin/sp/couple/edit/${item.id}` class="edit") Редагувати
+                form(action=`/admin/sp/couple/delete/${item.id}`, method="post")
+                  button(type="submit" class="delete") Видалити
+                    i.far.fa-trash-alt 
