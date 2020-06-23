@@ -23,7 +23,7 @@ const getSpShow = async (req, res) => {
           };
         }),
       };
-    });
+    }).sort((a,b)=>a.number - b.number);
 
     return res.status(200).render(path.join(__dirname, "views", "spCoupleList"), {
       data: couples,
@@ -109,7 +109,6 @@ const getSpEdit = async (req, res) => {
     const { id } = req.params;
     const editing = await Couple.findById(id);
     let display = {};
-    // console.log(editing)
 
     if (editing) {
       display.id = editing._id;
@@ -203,6 +202,9 @@ const postSpEdit = async (req, res) => {
 const postSpDelete = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
+    const {id} = req.params;
+    await Couple.findByIdAndDelete(id)
+    return res.status(200).redirect("../show");
   } else return res.status(200).redirect("/signin");
 };
 

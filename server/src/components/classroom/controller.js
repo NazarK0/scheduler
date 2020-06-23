@@ -1,7 +1,9 @@
 const path = require("path");
+const moment = require("moment");
 const Cafedra = require("../cafedra/model");
 const Schedule = require("../schedule/model");
 const Classroom = require("./model");
+const Couple = require("../couple/model");
 const { userTypes } = require("../../global/constants");
 const hasAccess = require("../../API/hasAccess");
 
@@ -25,7 +27,7 @@ const getSpShowByCafedra = async (req, res) => {
 
     labels.sort((a, b) => Number(a.number) - Number(b.number));
 
-    const classrooms = await Classroom.find({ cafedra: id }).sort({name: "asc"});
+    const classrooms = await Classroom.find({ cafedra: id }).sort({ name: "asc" });
 
     return res.status(200).render(path.join(__dirname, "views", "spClassroomList"), {
       data: classrooms,
@@ -55,7 +57,7 @@ const getSpShowByCafedra = async (req, res) => {
 //           ],
 //         },
 //       ],
-//     }) 
+//     })
 //       .select({ _id: 0, classroom1: 1,classroom2:2 })
 
 //     console.log(current, 'CUR')
@@ -129,65 +131,121 @@ const postSpDelete = async (req, res) => {
 const getSpFree = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
-    const { couple } = req.params;
+    const couples = await Couple.find()
+      .select({ _id: 0, number: 1 })
+      .sort({ number: "asc" })
+      .distinct("number");
 
-    const edited = await Classroom.findById(id);
-
-    return res.status(200).render(path.join(__dirname, "views", "editClassroom"), {
-      mode: "edit",
-      cafedra_id,
-      data: edited,
+    return res.status(200).render(path.join(__dirname, "views", "spFindFreeClassrooms"), {
+      labels: couples,
     });
   } else return res.status(200).redirect("/signin");
 };
 
-const getSpFreeByCouple = async (req, res) => {
-   const userId = req.session.passport.user;
-   if (await hasAccess(userId, userTypes.SP)) {
-     const { couple } = req.params;
+const postSpFindFree = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.SP)) {
+    const { couple, date } = req.body;
 
-     const edited = await Classroom.findById(id);
+    const couples = await Couple.find()
+      .select({ _id: 0, number: 1 })
+      .sort({ number: "asc" })
+      .distinct("number");
 
-     return res.status(200).render(path.join(__dirname, "views", "editClassroom"), {
-       mode: "edit",
-       cafedra_id,
-       data: edited,
-     });
-   } else return res.status(200).redirect("/signin");
+    if (date && couple) {
+      const busy_array = (
+        await Schedule.find({
+          couple,
+          date: moment(date).toISOString(),
+          $or: [{ classroom1: { $ne: null } }, { classroom2: { $ne: null } }],
+        }).select({
+          _id: 0,
+          classroom1: 1,
+          classroom2: 2,
+        })
+      ).reduce((accumulator, item) => {
+        const tmp = [];
+        if (item.classroom1) tmp.push(item.classroom1);
+        if (item.classroom2) tmp.push(item.classroom2);
+        return [...accumulator, ...tmp];
+      }, []);
+
+      const busy = [...new Set(busy_array)].sort();
+      const freeWithCafedraId = await Classroom.find({ name: { $nin: busy } });
+      const free = [];
+
+      for (let i = 0; i < freeWithCafedraId.length; i++) {
+        free.push({
+          id: freeWithCafedraId[i].id,
+          cafedra: freeWithCafedraId[i].cafedra,
+          cafedra_number: await Cafedra.findById(freeWithCafedraId[i].cafedra)
+            .select({
+              _id: 0,
+              number: 1,
+            })
+            .distinct("number"),
+          name: freeWithCafedraId[i].name,
+          seats: freeWithCafedraId[i].seats,
+          description: freeWithCafedraId[i].description,
+        });
+      }
+
+      return res.status(200).render(path.join(__dirname, "views", "spFreeClassrooms"), {
+        labels: couples,
+        data: free,
+        date: moment(date).format('DD.MM.YYYY'),
+        couple,
+      });
+    } else {
+      return res.status(200).render(path.join(__dirname, "views", "spFindFreeClassrooms"), {
+        labels: couples,
+      });
+    }
+  } else return res.status(200).redirect("/signin");
 };
 
-
-const postSpFreeByCouple = async (req, res) => {
-  const { couple, date } = req.body;
-  let coup = Number(couple);
-
-  try {
-    const schedule = await Schedule.find().where({ couple: coup }).where({ date: date }).select({
-      _id: 0,
-      classroom1: 1,
-      classroom2: 2,
+const postSpEditFree = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.SP)) {
+    const { cafedra_id, classroom, couple } = req.params;
+    const { date } = req.body;
+    return res.status(200).render(path.join(__dirname, "views", "spEditFree"), {
+      data: {
+        cafedra_id,
+        couple,
+        classroom,
+        date,
+      },
     });
+  } else return res.status(200).redirect("/signin");
+};
 
-    let set_couples_classrooms = new Set();
-    schedule.forEach((item) => {
-      if (item.classroom1 !== null && item.classroom1 !== undefined) {
-        set_couples_classrooms.add(item.classroom1);
-      }
-      if (item.classroom2 !== null && item.classroom2 !== undefined) {
-        set_couples_classrooms.add(item.classroom2);
-      }
-    });
-    const all_rooms_obj = await ClassRoom.find().where({
-      name: { $nin: Array.from(set_couples_classrooms) },
-    });
-    res.status(200).render(path.join(__dirname, "views", "spFreeClassrooms"), {
-      data: all_rooms_obj,
-    });
-  } catch (error) {
-    res.status(500).json(error);
-  }
-}
+const postSpEditedFree = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.SP)) {
+    const { cafedra_id, classroom, couple } = req.params;
+    const { date, group, subject, lesson_type, teacher1, teacher2, classroom2 } = req.body;
+    const school_week = (await Schedule.findOne({ date: moment(date, "DD.MM.YYYY").toISOString() })
+      .select({ _id: 0, school_week: 1 })
+      .distinct("school_week"))[0];
 
+    await new Schedule({
+      cafedra: cafedra_id,
+      subject,
+      lesson_type,
+      teacher1,
+      teacher2,
+      couple,
+      date: moment(date,'DD.MM.YYYY').toISOString(),
+      group,
+      classroom1: classroom,
+      classroom2,
+      school_week,
+    }).save();
+
+    return res.status(200).redirect("/admin/sp/classroom/free");
+  } else return res.status(200).redirect("/signin");
+};
 
 module.exports = {
   getSpShow,
@@ -199,102 +257,7 @@ module.exports = {
   postSpEdit,
   postSpDelete,
   getSpFree,
-  getSpFreeByCouple,
-  postSpFreeByCouple
+  postSpFindFree,
+  postSpEditFree,
+  postSpEditedFree,
 };
-
-// function getAddClassRoom(req, res) {
-//   const { cafedra } = req.params;
-//   try {
-//     return res.status(200).render(path.join(__dirname, "views", "editClassroom"), {
-//       mode: "add",
-//       cafedra,
-//     });
-//   } catch (error) {
-//     res.status(500);
-//   }
-// }
-// async function getEditClassRoom(req, res) {
-//   const { id_classroom, cafedra } = req.params;
-
-//   let edit_body = await ClassRoom.findById(id_classroom);
-
-//   try {
-//     return res.status(200).render(path.join(__dirname, "views", "editClassroom"), {
-//       mode: "edit",
-//       data: edit_body,
-//       id_classroom,
-//       cafedra,
-//     });
-//   } catch (error) {
-//     res.status(500);
-//   }
-// }
-
-// async function AddClassRoom(req, res) {
-//   console.log("in");
-//   const { cafedra } = req.params;
-//   const { name, seats_place, description } = req.body;
-//   try {
-//     await new ClassRoom({
-//       cafedra,
-//       name,
-//       seats_place,
-//       description,
-//     }).save();
-
-//     res.status(200).redirect(".");
-//   } catch (error) {
-//     res.status(500);
-//   }
-// }
-// async function EditClassroom(req, res) {
-//   const { name, seats_place, description } = req.body;
-//   try {
-//     await ClassRoom.findByIdAndUpdate(req.params.id_classroom, {
-//       $set: {
-//         cafedra: req.params.cafedra,
-//         name,
-//         seats_place,
-//         description,
-//       },
-//     });
-//     res.status(200).redirect("..");
-//   } catch (error) {
-//     res.status(500).json(error);
-//   }
-// }
-// async function RemoveClassRoom(req, res) {
-//   try {
-//     await ClassRoom.findByIdAndRemove(req.params.id_classroom);
-//     res.status(200).redirect("..");
-//   } catch (error) {
-//     res.status(500);
-//   }
-// }
-// 
-// async function getClassrooms(req, res) {
-//   const { kaf } = req.params;
-//   console.log(kaf);
-//   try {
-//     let all_rooms_for_cafedra = await ClassRoom.find({ cafedra: kaf });
-//     console.log("All", all_rooms_for_cafedra);
-//     let result = all_rooms_for_cafedra.map((item) => {
-//       return item.name;
-//     });
-//     console.log(result);
-//     res.status(200).json(result);
-//   } catch (error) {
-//     res.status(500).json(error);
-//   }
-// }
-// module.exports = {
-//   AddClassRoom,
-//   EditClassroom,
-//   RemoveClassRoom,
-//   FreeClassRoom,
-//   getAddClassRoom,
-//   getEditClassRoom,
-//   getFreeClassRoom,
-//   getClassrooms,
-// };

@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const moment = require('moment')
 const Schedule = require("./model");
 const getScheduleFromExcel = require("../../API/getScheduleFromExcel");
 const addingExcelDataToDb = require("../../API/addingExcelDataToDb");
@@ -16,12 +17,7 @@ module.exports.getShow = async (req, res) => {
   if (await hasAccess(userId, userTypes.SP)) {
     const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
 
-    const dateTimeFormat = new Intl.DateTimeFormat("uk", {
-      year: "numeric",
-      month: "long",
-      day: "2-digit",
-    });
-    const formattedDates = dates.map((date) => dateTimeFormat.format(date));
+    const formattedDates = dates.map((date) => moment(date).format("DD.MM.YYYY"));
     const data = await Schedule.find({ date: dates[0] }).sort({ group: "asc", couple: "asc" });
 
     return res.status(200).render(path.join(__dirname, "views", "spByDayList"), {
@@ -42,7 +38,7 @@ module.exports.getShowByDate = async (req, res) => {
       month: "long",
       day: "2-digit",
     });
-    const formattedDates = dates.map((date) => dateTimeFormat.format(date));
+    const formattedDates = dates.map((date) => moment(date).format("DD.MM.YYYY"));
     const data = await Schedule.find({ date: dates[id] }).sort({ group: "asc", couple: "asc" });
 
     return res.status(200).render(path.join(__dirname, "views", "spByDayList"), {
@@ -175,7 +171,7 @@ module.exports.postUpload = async (req, res) => {
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getSheduleForCafedra = async (req, res) => {
-  console.log('in');
+
  
     const { kaf, day } = req.params;
     console.log(kaf,day);

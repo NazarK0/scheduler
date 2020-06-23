@@ -1,7 +1,7 @@
 const Shedule = require("../components/schedule/model");
 
 const addExcelDataToDb = async (data) => {
-  await Shedule.db.dropCollection('schedules');
+  //await Shedule.db.dropCollection('schedules');
   for(let i=0;i<data.length;i++){
     // if( typeof data[i].classroom1!=='number' &&  typeof data[i].classroom1!=='undefined'){
     //   if(data[i].classroom1!==null && data[i].classroom1.includes("*")){

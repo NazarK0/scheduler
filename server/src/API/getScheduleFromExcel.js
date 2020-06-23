@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 /**
  * For function we need schedule in range D-AZ
  * every group line must start from group title(column D).
@@ -54,12 +56,12 @@ function getCourceAndDate(data) {
     course_and_date.course = first_object.A;
     course_and_date.school_week = first_object.D;
     course_and_date.dates = [
-      first_object.J,
-      first_object.R,
-      first_object.Z,
-      first_object.AH,
-      first_object.AP,
-      first_object.AW,
+      moment(first_object.J).toISOString(),
+      moment(first_object.R).toISOString(),
+      moment(first_object.Z).toISOString(),
+      moment(first_object.AH).toISOString(),
+      moment(first_object.AP).toISOString(),
+      moment(first_object.AW).toISOString(),
     ];
 
     return course_and_date;

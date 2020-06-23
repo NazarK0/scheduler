@@ -33,9 +33,19 @@ router.post(
 
 router.get(`/sp/${routeGroup}/free`, authenticationMiddleware(), controller.getSpFree);
 router
-  .route(`/sp/${routeGroup}/couple/:couple/free`)
-  .get(authenticationMiddleware(), controller.getSpFreeByCouple)
-  .post(authenticationMiddleware(), controller.postSpFreeByCouple);
+  .route(`/sp/${routeGroup}/find/free`)
+  //.get(authenticationMiddleware(), controller.getSpFindFree)
+  .post(authenticationMiddleware(), controller.postSpFindFree);
+
+router.post(
+  `/sp/cafedra/:cafedra_id/${routeGroup}/:classroom/couple/:couple/edit/free`,
+  authenticationMiddleware(),
+  controller.postSpEditFree
+);
+
+router
+  .route(`/sp/cafedra/:cafedra_id/${routeGroup}/:classroom/couple/:couple/free`)
+  .post(authenticationMiddleware(), controller.postSpEditedFree);
 
 
 module.exports = router;

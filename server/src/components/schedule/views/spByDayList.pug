@@ -4,6 +4,7 @@ block content
   h2 Розклад
   - if (data)
     a(href=`/admin/sp/schedule/${day}/add` class="add-btn") Додати
+    input(type="week", name="week")
     ul(class="dates")
       each label,index in labels
         li

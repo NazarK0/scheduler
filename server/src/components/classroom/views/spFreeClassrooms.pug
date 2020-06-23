@@ -2,8 +2,10 @@ extends ../../../global/views/layouts/mainSp.pug
 
 block content
   - let counter = 0;
-  h2 Вільні аудиторії
+  h2=`Вільні аудиторії станом на ${date}`
+  include ./freeForm.pug
   - if (data)
+    - const date_value = date ? date : "";
     div(class="table-wrapper")  
       table(class="fl-table")
         thead
@@ -13,12 +15,17 @@ block content
             th Аудиторія
             th Місць
             th Опис
+            th Дії
         tbody
           each item in data
             tr
               td= ++counter
-              td= item.cafedra
+              td= item.cafedra_number
               td= item.name
-              td= item.seats_place
+              td= item.seats
               td= item.description
-              
+              td
+                form(action=`/admin/sp/cafedra/${item.cafedra}/classroom/${item.name}/couple/${couple}/edit/free` method="POST" )
+                  input(type="hidden" name="date" value=date_value)
+                  button(type="submit" class="edit") Редагувати
+

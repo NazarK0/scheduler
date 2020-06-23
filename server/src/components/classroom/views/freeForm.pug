@@ -1,0 +1,7 @@
+form(action="/admin/sp/classroom/find/free" method="POST")
+    input(type="date" name="date")
+    each label in labels
+      span
+        input(type="radio", name="couple" value=label)
+        label= label + " пара"
+    button(type="submit") Пошук
