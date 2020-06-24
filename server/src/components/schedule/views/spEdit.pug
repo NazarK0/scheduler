@@ -2,7 +2,7 @@ extends ../../../global/views/layouts/mainSp.pug
 
 block content
   - const title = mode === "edit" ? "Редагувати" : mode === "add" ? "Додати" : "";
-  - const action = mode === "edit" ? `/admin/sp/schedule/edit/${data._id}`: mode === "add" ? `/admin/sp/schedule/${day}/add` : "";
+  - const action = mode === "edit" ? `/admin/sp/schedule/date/${date}/day/${day}/edit/${data._id}`: mode === "add" ? `/admin/sp/schedule/date/${date}/day/${day}/add` : "";
   - const value_schoolweek = data? data.school_week : "";
   - const value_group = data? data.group : "";
   - const value_couple = data? data.couple : "";
@@ -22,57 +22,65 @@ block content
     form(action=action method="post")
       div(class="row")
         div(class="col-25")
-          label(for="school_week") Навчальний тиждень:
+          label(for="school_week") Навчальний тиждень*:
         div(class="col-75")
-          input(type="text" name="school_week" value=value_schoolweek required)
+          input(type="number" min="1" name="school_week" value=value_schoolweek required)
       div(class="row")
         div(class="col-25")
           label Група*:
         div(class="col-75")
-          input(type="text" name="group" value=value_group required placeholder="Група")
+          input(type="text" name="group" value=value_group required)
       div(class="row")
         div(class="col-25")
           label Пара*:
         div(class="col-75")
-          input(type="text" name="couple" value=value_couple required placeholder="Пара")
+          input(type="number" min=0 max=10 name="couple" value=value_couple required)
+      div(class="row")
+        div(class="col-25")
+          label Кафедра*:
+        div(class="col-75")
+          select(name="cafedra")
+            option(value="") Не вибрано
+            each item in cafedras_list
+              option(value=item.id)=item.number
       div(class="row")
         div(class="col-25")
           label Аудиторія№1*:
         div(class="col-75")
-          input(type="text" name="classroom1" value=value_classroom1 required placeholder="Аудиторія №1")
+          input(type="text" name="classroom1" value=value_classroom1 required)
       div(class="row")
         div(class="col-25")
           label Аудиторія№2:
         div(class="col-75")
-          input(type="text" name="classroom2" value=value_classroom2 placeholder="Аудиторія№2")
+          input(type="text" name="classroom2" value=value_classroom2)
       div(class="row")
         div(class="col-25")
           label Дисципліна:
         div(class="col-75")
-          input(type="text" name="subject" value=value_subject placeholder="Дисципліна")
+          input(type="text" name="subject" value=value_subject)
       div(class="row")
         div(class="col-25")
           label Заняття:
         div(class="col-75")
-          input(type="text" name="lesson_type" value=value_lessontype placeholder="Заняття")
+          input(type="text" name="lesson_type" value=value_lessontype)
       div(class="row")
         div(class="col-25")
           label Викладач №1:
         div(class="col-75")
-          input(type="text" name="teacher1" value=value_teacher1 placeholder="Викладач №1")
+          input(type="text" name="teacher1" value=value_teacher1)
       div(class="row")
         div(class="col-25")
           label Викладач №2:
         div(class="col-75")
-          input(type="text" name="teacher2" value=value_teacher2 placeholder="Викладач №2")
+          input(type="text" name="teacher2" value=value_teacher2)
       div(class="row")
         div(class="col-25")
           label Викладач №3:
         div(class="col-75")
-          input(type="text" name="teacher1_1" value=value_teacher1_1 placeholder="Викладач №3")
+          input(type="text" name="teacher1_1" value=value_teacher1_1)
       div(class="row")
         div(class="col-25")
           label Викладач №4:
         div(class="col-75")
-          input(type="text" name="teacher2_1" value=value_teacher2_1 placeholder="Викладач №4")
+          input(type="text" name="teacher2_1" value=value_teacher2_1 )
       button(type="submit" class="signInButton") Зберегти

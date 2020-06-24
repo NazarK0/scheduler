@@ -10,8 +10,15 @@ const excel_schedule = upload_path.single("upload_schedule");
 
 const routeGroup = "schedule";
 
-router.get(`/sp/${routeGroup}/show`, authenticationMiddleware(), controller.getShow);
-router.get(`/sp/${routeGroup}/show/:id`, authenticationMiddleware(), controller.getShowByDate);
+
+router
+  .route(`/sp/${routeGroup}/find/week`)
+  .get(authenticationMiddleware(), controller.getSpFindWeek)
+  //.post(authenticationMiddleware(), controller.postSpFindWeek);
+
+
+router.post(`/sp/${routeGroup}/show`, authenticationMiddleware(), controller.postSpFindWeek);
+router.get(`/sp/${routeGroup}/date/:date/show/:id`, authenticationMiddleware(), controller.getShowByDate);
 router.post(
   `/sp/${routeGroup}/upload`,
   authenticationMiddleware(),
@@ -20,12 +27,12 @@ router.post(
   controller.postUpload
 );
 router
-  .route(`/sp/${routeGroup}/:day/add`)
+  .route(`/sp/${routeGroup}/date/:date/day/:day/add`)
   .get(authenticationMiddleware(), controller.getSpAdd)
   .post(authenticationMiddleware(), controller.postSpAdd);
 
 router
-  .route(`/sp/${routeGroup}/edit/:id`)
+  .route(`/sp/${routeGroup}/date/:date/day/:day/edit/:id`)
   .get(authenticationMiddleware(), controller.getSpEdit)
   .post(authenticationMiddleware(), controller.postSpEdit);
 

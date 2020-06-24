@@ -36,3 +36,22 @@ block content
                 form(action=`/admin/sp/classroom/cafedra/${cafedra_id}/delete/${item.id}`, method="post")
                   button(type="submit" class="delete") Видалити
                     i.far.fa-trash-alt 
+  - if (imported)
+    h3 Імпортовано з розкладу:
+     div(table-wrapper)  
+      table(class="fl-table")
+        thead
+          tr
+            th №п/п 
+            th Аудиторія 
+            th Дії
+        tbody
+          each item in imported
+            tr
+              td= ++counter
+              td= item.name
+              td
+                a(href=`/admin/sp/classroom/import/edit/${item.id}` class="edit") Редагувати
+                form(action=`/admin/sp/classroom/import/delete/${item.id}`, method="post")
+                  button(type="submit" class="delete") Видалити
+                    i.far.fa-trash-alt 

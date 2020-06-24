@@ -1,4 +1,6 @@
-const moment = require('moment')
+const moment = require("moment");
+const Cafedra = require("../components/cafedra/model");
+const Classroom = require("../components/classroom/model");
 
 /**
  * For function we need schedule in range D-AZ
@@ -7,7 +9,7 @@ const moment = require('moment')
  * For example: 22ООП, 1РХБЗ, К.3
  */
 
-function getScheduleFromExcel(data) {
+async function getScheduleFromExcel(data) {
   let lesson_lines = [];
   let lesson_data = null;
   let course_and_date = null;
@@ -31,7 +33,7 @@ function getScheduleFromExcel(data) {
         const line = Object.values(data[counter]);
         if (group !== line[0]) {
           if (group) {
-            lesson_data = lessonData(
+            lesson_data = await lessonData(
               lesson_lines,
               course_and_date.dates,
               course_and_date.school_week
@@ -75,14 +77,14 @@ function isLessonLine(data) {
   return keys[0] === "D";
 }
 
-function lessonData(data, dates, school_week) {
+async function lessonData(data, dates, school_week) {
   let lesson1, lesson2, lesson3, lesson4;
 
   const monday = [];
-  lesson1 = getLesson(data, "E", "F", 1, dates[0], school_week);
-  lesson2 = getLesson(data, "G", "H", 2, dates[0], school_week);
-  lesson3 = getLesson(data, "I", "J", 3, dates[0], school_week);
-  lesson4 = getLesson(data, "K", "L", 4, dates[0], school_week);
+  lesson1 = await getLesson(data, "E", "F", 1, dates[0], school_week);
+  lesson2 = await getLesson(data, "G", "H", 2, dates[0], school_week);
+  lesson3 = await getLesson(data, "I", "J", 3, dates[0], school_week);
+  lesson4 = await getLesson(data, "K", "L", 4, dates[0], school_week);
   monday.push(lesson1, lesson2, lesson3);
 
   if (Object.keys(lesson4).length) {
@@ -90,50 +92,50 @@ function lessonData(data, dates, school_week) {
   }
 
   const tuesday = [];
-  lesson1 = getLesson(data, "M", "N", 1, dates[1], school_week);
-  lesson2 = getLesson(data, "O", "P", 2, dates[1], school_week);
-  lesson3 = getLesson(data, "Q", "R", 3, dates[1], school_week);
-  lesson4 = getLesson(data, "S", "T", 4, dates[1], school_week);
+  lesson1 = await getLesson(data, "M", "N", 1, dates[1], school_week);
+  lesson2 = await getLesson(data, "O", "P", 2, dates[1], school_week);
+  lesson3 = await getLesson(data, "Q", "R", 3, dates[1], school_week);
+  lesson4 = await getLesson(data, "S", "T", 4, dates[1], school_week);
   tuesday.push(lesson1, lesson2, lesson3);
   if (Object.keys(lesson4).length) {
     tuesday.push(lesson4);
   }
 
   const wednesday = [];
-  lesson1 = getLesson(data, "U", "V", 1, dates[2], school_week);
-  lesson2 = getLesson(data, "W", "X", 2, dates[2], school_week);
-  lesson3 = getLesson(data, "Y", "Z", 3, dates[2], school_week);
-  lesson4 = getLesson(data, "AA", "AB", 4, dates[2], school_week);
+  lesson1 = await getLesson(data, "U", "V", 1, dates[2], school_week);
+  lesson2 = await getLesson(data, "W", "X", 2, dates[2], school_week);
+  lesson3 = await getLesson(data, "Y", "Z", 3, dates[2], school_week);
+  lesson4 = await getLesson(data, "AA", "AB", 4, dates[2], school_week);
   wednesday.push(lesson1, lesson2, lesson3);
   if (Object.keys(lesson4).length) {
     wednesday.push(lesson4);
   }
 
   const thursday = [];
-  lesson1 = getLesson(data, "AC", "AD", 1, dates[3], school_week);
-  lesson2 = getLesson(data, "AE", "AF", 2, dates[3], school_week);
-  lesson3 = getLesson(data, "AG", "AH", 3, dates[3], school_week);
-  lesson4 = getLesson(data, "AI", "AJ", 4, dates[3], school_week);
+  lesson1 = await getLesson(data, "AC", "AD", 1, dates[3], school_week);
+  lesson2 = await getLesson(data, "AE", "AF", 2, dates[3], school_week);
+  lesson3 = await getLesson(data, "AG", "AH", 3, dates[3], school_week);
+  lesson4 = await getLesson(data, "AI", "AJ", 4, dates[3], school_week);
   thursday.push(lesson1, lesson2, lesson3);
   if (Object.keys(lesson4).length) {
     thursday.push(lesson4);
   }
 
   const friday = [];
-  lesson1 = getLesson(data, "AK", "AL", 1, dates[4], school_week);
-  lesson2 = getLesson(data, "AM", "AN", 2, dates[4], school_week);
-  lesson3 = getLesson(data, "AO", "AP", 3, dates[4], school_week);
-  lesson4 = getLesson(data, "AQ", "AR", 4, dates[4], school_week);
+  lesson1 = await getLesson(data, "AK", "AL", 1, dates[4], school_week);
+  lesson2 = await getLesson(data, "AM", "AN", 2, dates[4], school_week);
+  lesson3 = await getLesson(data, "AO", "AP", 3, dates[4], school_week);
+  lesson4 = await getLesson(data, "AQ", "AR", 4, dates[4], school_week);
   friday.push(lesson1, lesson2, lesson3);
   if (Object.keys(lesson4).length) {
     friday.push(lesson4);
   }
 
   const saturday = [];
-  lesson1 = getLesson(data, "AS", "AT", 1, dates[5], school_week);
-  lesson2 = getLesson(data, "AU", "AV", 2, dates[5], school_week);
-  lesson3 = getLesson(data, "AW", "AX", 3, dates[5], school_week);
-  lesson4 = getLesson(data, "AY", "AZ", 4, dates[5], school_week);
+  lesson1 = await getLesson(data, "AS", "AT", 1, dates[5], school_week);
+  lesson2 = await getLesson(data, "AU", "AV", 2, dates[5], school_week);
+  lesson3 = await getLesson(data, "AW", "AX", 3, dates[5], school_week);
+  lesson4 = await getLesson(data, "AY", "AZ", 4, dates[5], school_week);
   saturday.push(lesson1, lesson2, lesson3);
   if (Object.keys(lesson4).length) {
     saturday.push(lesson4);
@@ -142,11 +144,12 @@ function lessonData(data, dates, school_week) {
   return [...monday, ...tuesday, ...wednesday, ...thursday, ...friday, ...saturday];
 }
 
-function getLesson(data, column1, column2, couple, date, school_week) {
+async function getLesson(data, column1, column2, couple, date, school_week) {
   const model = {};
 
   for (let i = 0; i < data.length; i++) {
     if (Object.keys(data[i]).includes(column1) || Object.keys(data[i]).includes(column2)) {
+      
       if (data[i][column1]) {
         switch (i) {
           case 0:
@@ -156,7 +159,15 @@ function getLesson(data, column1, column2, couple, date, school_week) {
             const found_cafedra = cafedra_and_subject.match(regex_cafedra);
 
             if (found_cafedra) {
-              model.cafedra = found_cafedra[0];
+              const inDatabase = await Cafedra.findOne({ number: found_cafedra[0] }).select({
+                _id: 1,
+              });
+              if (inDatabase) {
+                model.cafedra = inDatabase.id;
+              } else {
+                const new_cafedra = await new Cafedra({ number: found_cafedra[0] }).save();
+                model.cafedra = new_cafedra.id;
+              }
             } else {
               model.cafedra = null;
             }
@@ -178,7 +189,20 @@ function getLesson(data, column1, column2, couple, date, school_week) {
             model.teacher2 = data[i][column1];
             break;
           case 3:
-            model.classroom1 = data[i][column1];
+            //model.classroom1 = data[i][column1];
+            const inDatabase = await Classroom.findOne({
+              name: data[i][column1],
+            }).select({
+              _id: 1,
+            });
+            if (inDatabase) {
+              model.classroom1 = inDatabase.id;
+            } else {
+              const new_classroom1 = await new Classroom({
+                name: data[i][column1],
+              }).save();
+              model.classroom1 = new_classroom1.id;
+            }
             break;
         }
       } else {
@@ -213,6 +237,19 @@ function getLesson(data, column1, column2, couple, date, school_week) {
             break;
           case 3:
             model.classroom2 = data[i][column2];
+            const inDatabase = await Classroom.findOne({
+              name: data[i][column2],
+            }).select({
+              _id: 1,
+            });
+            if (inDatabase) {
+              model.classroom2 = inDatabase.id;
+            } else {
+              const new_classroom2 = await new Classroom({
+                name: data[i][column2],
+              }).save();
+              model.classroom2 = new_classroom2.id;
+            }
             break;
         }
       } else {

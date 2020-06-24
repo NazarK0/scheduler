@@ -11,10 +11,13 @@ const getSpShow = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
     const labels = await Cafedra.find({ number: { $ne: null } });
-
     labels.sort((a, b) => Number(a.number) - Number(b.number));
 
-    return res.status(200).render(path.join(__dirname, "views", "spClassroomList"), { labels });
+    const imported = await Classroom.find({ cafedra: null }).sort({ name: "asc" });
+
+    return res
+      .status(200)
+      .render(path.join(__dirname, "views", "spClassroomList"), { labels, imported });
   } else return res.status(200).redirect("/signin");
 };
 
@@ -118,6 +121,46 @@ const postSpEdit = async (req, res) => {
   } else return res.status(200).redirect("/signin");
 };
 
+const getSpImportEdit = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.SP)) {
+    const { id } = req.params;
+
+    const edited = await Classroom.findById(id);
+
+    const cafedras_list = await Cafedra.find()
+      //.select({ number: 1 })
+      .sort({ number: "asc" });
+
+    cafedras_list.sort((a, b) => {
+      if (isFinite(a.number) && isFinite(b.number)) {
+        return Number(a.number) - Number(b.number);
+      } else {
+        return a.number > b.number;
+      }
+    });
+
+    console.log(cafedras_list);
+
+    return res.status(200).render(path.join(__dirname, "views", "editImported"), {
+      data: edited,
+      cafedras_list,
+    });
+  } else return res.status(200).redirect("/signin");
+};
+
+const postSpImportEdit = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.SP)) {
+    const { id } = req.params;
+    let { name, seats, description, cafedra } = req.body;
+    cafedra = cafedra ? cafedra : null;
+
+    await Classroom.findByIdAndUpdate(id, { name, seats, description, cafedra });
+    return res.status(200).redirect("../../show");
+  } else return res.status(200).redirect("/signin");
+};
+
 const postSpDelete = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
@@ -125,6 +168,15 @@ const postSpDelete = async (req, res) => {
     await Classroom.findByIdAndDelete(id);
 
     return res.status(200).redirect("../show");
+  } else return res.status(200).redirect("/signin");
+};
+const postSpImportDelete = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.SP)) {
+    const { id } = req.params;
+    await Classroom.findByIdAndDelete(id);
+
+    return res.status(200).redirect("../../show");
   } else return res.status(200).redirect("/signin");
 };
 
@@ -193,7 +245,7 @@ const postSpFindFree = async (req, res) => {
       return res.status(200).render(path.join(__dirname, "views", "spFreeClassrooms"), {
         labels: couples,
         data: free,
-        date: moment(date).format('DD.MM.YYYY'),
+        date: moment(date).format("DD.MM.YYYY"),
         couple,
       });
     } else {
@@ -225,9 +277,11 @@ const postSpEditedFree = async (req, res) => {
   if (await hasAccess(userId, userTypes.SP)) {
     const { cafedra_id, classroom, couple } = req.params;
     const { date, group, subject, lesson_type, teacher1, teacher2, classroom2 } = req.body;
-    const school_week = (await Schedule.findOne({ date: moment(date, "DD.MM.YYYY").toISOString() })
-      .select({ _id: 0, school_week: 1 })
-      .distinct("school_week"))[0];
+    const school_week = (
+      await Schedule.findOne({ date: moment(date, "DD.MM.YYYY").toISOString() })
+        .select({ _id: 0, school_week: 1 })
+        .distinct("school_week")
+    )[0];
 
     await new Schedule({
       cafedra: cafedra_id,
@@ -236,7 +290,7 @@ const postSpEditedFree = async (req, res) => {
       teacher1,
       teacher2,
       couple,
-      date: moment(date,'DD.MM.YYYY').toISOString(),
+      date: moment(date, "DD.MM.YYYY").toISOString(),
       group,
       classroom1: classroom,
       classroom2,
@@ -255,7 +309,10 @@ module.exports = {
   postSpAdd,
   getSpEdit,
   postSpEdit,
+  getSpImportEdit,
+  postSpImportEdit,
   postSpDelete,
+  postSpImportDelete,
   getSpFree,
   postSpFindFree,
   postSpEditFree,

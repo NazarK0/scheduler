@@ -1,64 +1,143 @@
 const path = require("path");
 const fs = require("fs");
-const moment = require('moment')
+const moment = require("moment");
 const Schedule = require("./model");
 const getScheduleFromExcel = require("../../API/getScheduleFromExcel");
 const addingExcelDataToDb = require("../../API/addingExcelDataToDb");
 const convertExcelToJson = require("convert-excel-to-json");
-const { getShedule,anySchedule } = require("../../API/SheduleTable.js/getShedule");
+const { getShedule, anySchedule } = require("../../API/SheduleTable.js/getShedule");
 const User = require("../user/model");
 const Cafedra = require("../cafedra/model");
+const Classroom = require("../classroom/model");
 const { userTypes } = require("../../global/constants");
 const hasAccess = require("../../API/hasAccess");
-const {domain} = require("../../../config/config.json")
+const { domain } = require("../../../config/config.json");
 
-module.exports.getShow = async (req, res) => {
+module.exports.getSpFindWeek = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
-    const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
-
-    const formattedDates = dates.map((date) => moment(date).format("DD.MM.YYYY"));
-    const data = await Schedule.find({ date: dates[0] }).sort({ group: "asc", couple: "asc" });
-
-    return res.status(200).render(path.join(__dirname, "views", "spByDayList"), {
-      data,
-      labels: formattedDates,
-      day: 0,
-    });
+    return res.status(200).render(path.join(__dirname, "views", "spFindWeek"));
   } else return res.status(200).redirect("/signin");
 };
+
+module.exports.postSpFindWeek = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.SP)) {
+    const { week } = req.body;
+    const mondayDate = moment(week, "YYYY-Wgg").toISOString();
+
+    if (mondayDate && mondayDate != "Invalid date") {
+      const schedule = await Schedule.find({ date: mondayDate }).sort({
+        group: "asc",
+        couple: "asc",
+      });
+
+      for (let i = 0; i < schedule.length; i++) {
+        schedule[i].cafedra = (
+          await Cafedra.findById(schedule[i].cafedra)
+            .select({ _id: 0, number: 1 })
+            .distinct("number")
+        )[0];
+
+        schedule[i].classroom1 = (
+          await Classroom.findById(schedule[i].classroom1)
+            .select({ _id: 0, name: 1 })
+            .distinct("name")
+        )[0];
+
+        schedule[i].classroom2 = (
+          await Classroom.findById(schedule[i].classroom2)
+            .select({ _id: 0, name: 1 })
+            .distinct("name")
+        )[0];
+      }
+      const labels = [];
+
+      labels.push(`${moment(mondayDate).format("DD.MM.YYYY")} Пн`);
+      labels.push(`${moment(mondayDate).add(1, "days").format("DD.MM.YYYY")} Вт`);
+      labels.push(`${moment(mondayDate).add(2, "days").format("DD.MM.YYYY")} Ср`);
+      labels.push(`${moment(mondayDate).add(3, "days").format("DD.MM.YYYY")} Чт`);
+      labels.push(`${moment(mondayDate).add(4, "days").format("DD.MM.YYYY")} Пт`);
+      labels.push(`${moment(mondayDate).add(5, "days").format("DD.MM.YYYY")} Сб`);
+      labels.push(`${moment(mondayDate).add(6, "days").format("DD.MM.YYYY")} Нд`);
+
+      return res.status(200).render(path.join(__dirname, "views", "spByDayList"), {
+        data: schedule,
+        labels,
+        date: moment(mondayDate).format("DD.MM.YYYY"),
+        day: 0,
+      });
+    }
+
+    return res.status(200).render(path.join(__dirname, "views", "spFindWeek"));
+  } else return res.status(200).redirect("/signin");
+};
+
 module.exports.getShowByDate = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
-    const { id } = req.params;
-    const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
+    const { date, id } = req.params;
+    const mondayDate = moment(date, "DD.MM.YYYY");
 
-    const dateTimeFormat = new Intl.DateTimeFormat("uk", {
-      year: "numeric",
-      month: "long",
-      day: "2-digit",
-    });
-    const formattedDates = dates.map((date) => moment(date).format("DD.MM.YYYY"));
-    const data = await Schedule.find({ date: dates[id] }).sort({ group: "asc", couple: "asc" });
+    if (mondayDate && mondayDate != "Invalid date") {
+      const schedule = await Schedule.find({
+        date: moment(mondayDate).add(id, "days").toISOString(),
+      }).sort({ group: "asc", couple: "asc" });
 
-    return res.status(200).render(path.join(__dirname, "views", "spByDayList"), {
-      data,
-      labels: formattedDates,
-      day: id,
-    });
+      for (let i = 0; i < schedule.length; i++) {
+        schedule[i].cafedra = (
+          await Cafedra.findById(schedule[i].cafedra)
+            .select({ _id: 0, number: 1 })
+            .distinct("number")
+        )[0];
+      }
+      const labels = [];
+
+      labels.push(`${moment(mondayDate).format("DD.MM.YYYY")} Пн`);
+      labels.push(`${moment(mondayDate).add(1, "days").format("DD.MM.YYYY")} Вт`);
+      labels.push(`${moment(mondayDate).add(2, "days").format("DD.MM.YYYY")} Ср`);
+      labels.push(`${moment(mondayDate).add(3, "days").format("DD.MM.YYYY")} Чт`);
+      labels.push(`${moment(mondayDate).add(4, "days").format("DD.MM.YYYY")} Пт`);
+      labels.push(`${moment(mondayDate).add(5, "days").format("DD.MM.YYYY")} Сб`);
+      labels.push(`${moment(mondayDate).add(6, "days").format("DD.MM.YYYY")} Нд`);
+
+      return res.status(200).render(path.join(__dirname, "views", "spByDayList"), {
+        data: schedule,
+        labels,
+        day: id,
+        date: moment(mondayDate).format("DD.MM.YYYY"),
+      });
+    }
+    return res.status(200).render(path.join(__dirname, "views", "spFindWeek"));
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getSpAdd = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
-    const { day } = req.params;
-    return res.status(200).render(path.join(__dirname, "views", "spEdit"), { day, mode: "add" });
+    const { date, day } = req.params;
+
+    const cafedras_list = await Cafedra.find()
+      .select({ _id: 1, number: 2 })
+      .sort({ number: "asc" });
+
+    cafedras_list.sort((a, b) => {
+      if (isFinite(a.number) && isFinite(b.number)) {
+        return Number(a.number) - Number(b.number);
+      } else {
+        return a.number > b.number;
+      }
+    });
+
+    return res
+      .status(200)
+      .render(path.join(__dirname, "views", "spEdit"), { date, day, cafedras_list, mode: "add" });
   } else return res.status(200).redirect("/signin");
 };
 module.exports.postSpAdd = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
-    const { day } = req.params;
+    const { date, day } = req.params;
+
     const {
       school_week,
       cafedra,
@@ -73,7 +152,6 @@ module.exports.postSpAdd = async (req, res) => {
       teacher1_1,
       teacher2_1,
     } = req.body;
-    const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
 
     await new Schedule({
       group,
@@ -86,28 +164,43 @@ module.exports.postSpAdd = async (req, res) => {
       teacher2,
       teacher1_1,
       teacher2_1,
-      date: dates[day],
+      date: moment(date, "DD.MM.YYYY").add(day, "days").toISOString(),
       cafedra,
       school_week,
     }).save();
 
-    return res.status(200).redirect("../show");
+    return res.status(200).redirect(`../../show/${day}`);
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getSpEdit = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
-    const { id } = req.params;
+    const { id, date, day } = req.params;
     const editing = await Schedule.findById(id);
-    return res
-      .status(200)
-      .render(path.join(__dirname, "views", "spEdit"), { data: editing, mode: "edit" });
+    const cafedras_list = await Cafedra.find()
+      .select({ _id: 1, number: 2 })
+      .sort({ number: "asc" });
+
+    cafedras_list.sort((a, b) => {
+      if (isFinite(a.number) && isFinite(b.number)) {
+        return Number(a.number) - Number(b.number);
+      } else {
+        return a.number > b.number;
+      }
+    });
+    return res.status(200).render(path.join(__dirname, "views", "spEdit"), {
+      data: editing,
+      mode: "edit",
+      date,
+      day,
+      cafedras_list,
+    });
   } else return res.status(200).redirect("/signin");
 };
 module.exports.postSpEdit = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
-    const { id } = req.params;
+    const { id, day } = req.params;
     const {
       school_week,
       group,
@@ -136,15 +229,20 @@ module.exports.postSpEdit = async (req, res) => {
       teacher1_1,
       teacher2_1,
     });
-    return res.status(200).redirect("../show");
+    return res.status(200).redirect(`../../../show/${day}`);
   } else return res.status(200).redirect("/signin");
 };
 module.exports.postSpDelete = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {
     const { id } = req.params;
-    await Schedule.findByIdAndDelete(id);
-    return res.status(200).redirect("../show");
+
+    const deleted = await Schedule.findByIdAndDelete(id).select({ _id: 0, date: 1 });
+
+    const dayOfWeek = moment(deleted.date).format("d") - 1;
+    const monday = moment(deleted.date).subtract(dayOfWeek, "days").format("DD.MM.YYYY");
+
+    return res.status(200).redirect(`../date/${monday}/show/${dayOfWeek}`);
   } else return res.status(200).redirect("/signin");
 };
 module.exports.postUpload = async (req, res) => {
@@ -162,7 +260,7 @@ module.exports.postUpload = async (req, res) => {
           },
         });
 
-        const schedule = getScheduleFromExcel(Object.values(rawData)[0]);
+        const schedule = await getScheduleFromExcel(Object.values(rawData)[0]);
         await addingExcelDataToDb(schedule);
         fs.unlinkSync(filePath);
       }
@@ -171,19 +269,16 @@ module.exports.postUpload = async (req, res) => {
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getSheduleForCafedra = async (req, res) => {
-
- 
-    const { kaf, day } = req.params;
-    console.log(kaf,day);
-    const result = await getShedule(kaf, day);
-    res.status(200).json(result);
- 
+  const { kaf, day } = req.params;
+  console.log(kaf, day);
+  const result = await getShedule(kaf, day);
+  res.status(200).json(result);
 };
-module.exports.getAnySchedule = async (req,res)=>{
-  const {kaf,day}=req.params;
-  const result=await anySchedule(kaf,day);
+module.exports.getAnySchedule = async (req, res) => {
+  const { kaf, day } = req.params;
+  const result = await anySchedule(kaf, day);
   return res.json(result);
-}
+};
 module.exports.getShowCafWeek = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
@@ -270,8 +365,6 @@ module.exports.getShowCafWeek_secret = async (req, res) => {
       day: "2-digit",
     });
     const labels = dates.map((date) => dateTimeFormat.format(date));
-
-    
 
     return res.status(200).render(path.join(__dirname, "views", "cafByDayList_secret"), {
       data: schedule,
@@ -493,18 +586,14 @@ module.exports.postCafedraDelete = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
     const { id } = req.params;
-    await Schedule.findByIdAndDelete(id);
-    return res.status(200).redirect("../show");
+    const deleted = await Schedule.findByIdAndDelete(id).select({ _id: 0, date: 1 });
+    console.log(deleted);
+    return res.status(200).redirect(`../date/${date}/show/${index}`);
   } else return res.status(200).redirect("/signin");
 };
-module.exports.getClassroom=async(req,res)=>{
+module.exports.getClassroom = async (req, res) => {
+  const { kaf } = req.params;
 
-  const {
-    kaf
-  }=req.params;
-
-  let result=await Cafedra.findOne({name:kaf});
-   return res.json(result.classrooms);
-
-
-}
+  let result = await Cafedra.findOne({ name: kaf });
+  return res.json(result.classrooms);
+};

@@ -45,7 +45,7 @@ const postSpImportFromSchedule = async (req, res) => {
     const current = await Subject.find({ cafedra: id })
       .select({ _id: 0, name: 1 })
       .distinct("abbreviation");
-    const subjects = await Schedule.find({ cafedra: number, subject: { $nin: [null, ...current] } })
+    const subjects = await Schedule.find({ cafedra: id, subject: { $nin: [null, ...current] } })
       .select({ _id: 0, subject: 1 })
       .distinct("subject");
 

@@ -25,6 +25,17 @@ router
   .get(authenticationMiddleware(), controller.getSpEdit)
   .post(authenticationMiddleware(), controller.postSpEdit);
 
+router
+  .route(`/sp/${routeGroup}/import/edit/:id`)
+  .get(authenticationMiddleware(), controller.getSpImportEdit)
+  .post(authenticationMiddleware(), controller.postSpImportEdit);
+
+router.post(
+  `/sp/${routeGroup}/import/delete/:id`,
+  authenticationMiddleware(),
+  controller.postSpImportDelete
+);
+
 router.post(
   `/sp/${routeGroup}/cafedra/:cafedra_id/delete/:id`,
   authenticationMiddleware(),

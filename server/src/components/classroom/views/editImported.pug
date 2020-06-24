@@ -1,0 +1,36 @@
+extends ../../../global/views/layouts/mainSp.pug
+
+
+block content
+
+  style 
+    include /styles/login.css
+
+  - const value_name = data? data.name : "";
+  h2=Редагувати
+  div(class="container")
+    form(action=`/admin/sp/classroom/import/edit/${data.id}` method="post")
+      div(class="row")
+        div(class="col-25")
+          label Аудиторія*:
+        div(class="col-75")
+          input(type="text" name="name" value=value_name required)
+      div(class="row")
+        div(class="col-25")
+          label Кафедра:
+        div(class="col-75")
+          select(name="cafedra")
+            option(value="") Не вибрано
+            each item in cafedras_list
+              option(value=item.id)=item.number
+      div(class="row")
+        div(class="col-25")
+          label Місць:
+        div(class="col-75")
+          input(type="number" name="seats")
+      div(class="row")
+        div(class="col-25")
+          label Опис:
+        div(class="col-75")
+          textarea( name="description")
+      button(type="submit" class="signInButton") Зберегти

@@ -3,12 +3,12 @@ extends ../../../global/views/layouts/mainSp.pug
 block content
   h2 Розклад
   - if (data)
-    a(href=`/admin/sp/schedule/${day}/add` class="add-btn") Додати
-    input(type="week", name="week")
+    a(href=`/admin/sp/schedule/date/${date}/day/${day}/add` class="add-btn") Додати
+    include ./weekForm.pug
     ul(class="dates")
       each label,index in labels
         li
-          a(href='/admin/sp/schedule/show/'+index)=label
+          a(href=`/admin/sp/schedule/date/${date}/show/${index}`)=label
     div(class="table-wrapper")
       table(class="fl-table")
         thead
@@ -32,7 +32,7 @@ block content
               td= item.lesson_type
               td= [item.teacher1, item.teacher2, item.teacher1_1, item.teacher2_1]
               td
-                a(href=`/admin/sp/schedule/edit/${item._id}` class="edit") Редагувати
+                a(href=`/admin/sp/schedule/date/${date}/day/${day}/edit/${item._id}` class="edit") Редагувати
                 form(action=`/admin/sp/schedule/delete/${item.id}`, method="post")
                   button(type="submit" class="delete") Видалити 
                     i.far.fa-trash-alt 
