@@ -59,7 +59,7 @@ module.exports.postSpFindWeek = async (req, res) => {
       labels.push(`${moment(mondayDate).add(3, "days").format("DD.MM.YYYY")} Чт`);
       labels.push(`${moment(mondayDate).add(4, "days").format("DD.MM.YYYY")} Пт`);
       labels.push(`${moment(mondayDate).add(5, "days").format("DD.MM.YYYY")} Сб`);
-      labels.push(`${moment(mondayDate).add(6, "days").format("DD.MM.YYYY")} Нд`);
+      //labels.push(`${moment(mondayDate).add(6, "days").format("DD.MM.YYYY")} Нд`);
 
       return res.status(200).render(path.join(__dirname, "views", "spByDayList"), {
         data: schedule,
@@ -90,6 +90,18 @@ module.exports.getShowByDate = async (req, res) => {
             .select({ _id: 0, number: 1 })
             .distinct("number")
         )[0];
+
+        schedule[i].classroom1 = (
+          await Classroom.findById(schedule[i].classroom1)
+            .select({ _id: 0, name: 1 })
+            .distinct("name")
+        )[0];
+
+        schedule[i].classroom2 = (
+          await Classroom.findById(schedule[i].classroom2)
+            .select({ _id: 0, name: 1 })
+            .distinct("name")
+        )[0];
       }
       const labels = [];
 
@@ -99,7 +111,7 @@ module.exports.getShowByDate = async (req, res) => {
       labels.push(`${moment(mondayDate).add(3, "days").format("DD.MM.YYYY")} Чт`);
       labels.push(`${moment(mondayDate).add(4, "days").format("DD.MM.YYYY")} Пт`);
       labels.push(`${moment(mondayDate).add(5, "days").format("DD.MM.YYYY")} Сб`);
-      labels.push(`${moment(mondayDate).add(6, "days").format("DD.MM.YYYY")} Нд`);
+      //labels.push(`${moment(mondayDate).add(6, "days").format("DD.MM.YYYY")} Нд`);
 
       return res.status(200).render(path.join(__dirname, "views", "spByDayList"), {
         data: schedule,
@@ -128,9 +140,25 @@ module.exports.getSpAdd = async (req, res) => {
       }
     });
 
-    return res
-      .status(200)
-      .render(path.join(__dirname, "views", "spEdit"), { date, day, cafedras_list, mode: "add" });
+    const classrooms_list = await Classroom.find()
+      .select({ _id: 1, name: 2 })
+      .sort({ name: "asc" });
+
+    classrooms_list.sort((a, b) => {
+      if (isFinite(a.name) && isFinite(b.name)) {
+        return Number(a.name) - Number(b.name);
+      } else {
+        return a.name > b.name;
+      }
+    });
+
+    return res.status(200).render(path.join(__dirname, "views", "spEdit"), {
+      date,
+      day,
+      cafedras_list,
+      classrooms_list,
+      mode: "add",
+    });
   } else return res.status(200).redirect("/signin");
 };
 module.exports.postSpAdd = async (req, res) => {
@@ -153,20 +181,33 @@ module.exports.postSpAdd = async (req, res) => {
       teacher2_1,
     } = req.body;
 
-    await new Schedule({
+    const data = {
+      school_week,
       group,
       couple,
-      classroom1,
-      classroom2,
       subject,
       lesson_type,
       teacher1,
       teacher2,
       teacher1_1,
       teacher2_1,
+    };
+
+    if (classroom1 !== "Current") {
+      data.classroom1 = classroom1;
+    }
+
+    if (classroom2 !== "Current") {
+      data.classroom2 = classroom2;
+    }
+
+    if (cafedra !== "Current") {
+      data.cafedra = cafedra;
+    }
+
+    await new Schedule({
+      ...data,
       date: moment(date, "DD.MM.YYYY").add(day, "days").toISOString(),
-      cafedra,
-      school_week,
     }).save();
 
     return res.status(200).redirect(`../../show/${day}`);
@@ -177,6 +218,23 @@ module.exports.getSpEdit = async (req, res) => {
   if (await hasAccess(userId, userTypes.SP)) {
     const { id, date, day } = req.params;
     const editing = await Schedule.findById(id);
+
+    editing.cafedra = (
+      await Cafedra.findById(editing.cafedra).select({ _id: 0, number: 1 }).distinct("number")
+    )[0];
+
+    if (!editing.cafedra) {
+      editing.cafedra = "";
+    }
+
+    editing.classroom1 = (
+      await Classroom.findById(editing.classroom1).select({ _id: 0, name: 1 }).distinct("name")
+    )[0];
+
+    editing.classroom2 = (
+      await Classroom.findById(editing.classroom2).select({ _id: 0, name: 1 }).distinct("name")
+    )[0];
+
     const cafedras_list = await Cafedra.find()
       .select({ _id: 1, number: 2 })
       .sort({ number: "asc" });
@@ -188,12 +246,25 @@ module.exports.getSpEdit = async (req, res) => {
         return a.number > b.number;
       }
     });
+
+    const classrooms_list = await Classroom.find()
+      .select({ _id: 1, name: 2 })
+      .sort({ name: "asc" });
+
+    classrooms_list.sort((a, b) => {
+      if (isFinite(a.name) && isFinite(b.name)) {
+        return Number(a.name) - Number(b.name);
+      } else {
+        return a.name > b.name;
+      }
+    });
     return res.status(200).render(path.join(__dirname, "views", "spEdit"), {
       data: editing,
       mode: "edit",
       date,
       day,
       cafedras_list,
+      classrooms_list,
     });
   } else return res.status(200).redirect("/signin");
 };
@@ -215,20 +286,32 @@ module.exports.postSpEdit = async (req, res) => {
       teacher1_1,
       teacher2_1,
     } = req.body;
-    await Schedule.findByIdAndUpdate(id, {
+
+    const update_data = {
       school_week,
       group,
       couple,
-      cafedra,
-      classroom1,
-      classroom2,
       subject,
       lesson_type,
       teacher1,
       teacher2,
       teacher1_1,
       teacher2_1,
-    });
+    };
+
+    if (classroom1 !== "Current") {
+      update_data.classroom1 = classroom1;
+    }
+
+    if (classroom2 !== "Current") {
+      update_data.classroom2 = classroom2;
+    }
+
+    if (cafedra !== "Current") {
+      update_data.cafedra = cafedra;
+    }
+
+    await Schedule.findByIdAndUpdate(id, update_data);
     return res.status(200).redirect(`../../../show/${day}`);
   } else return res.status(200).redirect("/signin");
 };
@@ -245,6 +328,13 @@ module.exports.postSpDelete = async (req, res) => {
     return res.status(200).redirect(`../date/${monday}/show/${dayOfWeek}`);
   } else return res.status(200).redirect("/signin");
 };
+module.exports.postSpDrop = async (req, res) =>{
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.SP)) {
+    await Schedule.remove({});
+    return res.status(200).redirect('../..');
+  } else return res.status(200).redirect("/signin");
+}
 module.exports.postUpload = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.SP)) {

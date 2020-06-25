@@ -1,15 +1,35 @@
 $sub-bg: #178d2b;
-$sub-shadow:rgba(211, 241, 241, 0.664);
+$sub-shadow: rgba(211, 241, 241, 0.664);
 
 .dws-menu {
   * {
     margin: 0;
     padding: 0;
-    z-index: 999;
+    font-size: 26px;
+    z-index: 9;
   }
   ul,
   ol {
     list-style: none;
+  }
+
+  .transparent-btn {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    font-size: 18px;
+    text-transform: uppercase;
+    color: #454547;
+    text-shadow: 0 0 1em rgba(12, 12, 12, 0.63);
+    
+    &:hover {
+          background: $sub-bg;
+          color: #ffffff;
+          transition: all 0.3s ease;
+        }
   }
 
   > ul {
@@ -28,7 +48,8 @@ $sub-shadow:rgba(211, 241, 241, 0.664);
         color: #454547;
         text-decoration: none;
         text-transform: uppercase;
-        transition: all 0.3s ease;  
+        transition: all 0.3s ease;
+        
       }
     }
   }
@@ -46,7 +67,7 @@ $sub-shadow:rgba(211, 241, 241, 0.664);
           padding: 10px;
           margin: 0px;
           text-transform: uppercase;
-          background:$sub-shadow;
+          background: $sub-shadow;
           box-shadow: 0px 0px 10px 5px $sub-shadow;
           font-size: 18px;
         }

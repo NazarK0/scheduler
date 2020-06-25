@@ -223,19 +223,27 @@ const postSpFindFree = async (req, res) => {
       }, []);
 
       const busy = [...new Set(busy_array)].sort();
-      const freeWithCafedraId = await Classroom.find({ name: { $nin: busy } });
+      console.log(busy)
+      const freeWithCafedraId = await Classroom.find({ _id: { $nin: busy } });
       const free = [];
 
       for (let i = 0; i < freeWithCafedraId.length; i++) {
-        free.push({
-          id: freeWithCafedraId[i].id,
-          cafedra: freeWithCafedraId[i].cafedra,
-          cafedra_number: await Cafedra.findById(freeWithCafedraId[i].cafedra)
+        let cafedra_number;
+        try {
+           cafedra_number = await Cafedra.findById(freeWithCafedraId[i].cafedra)
             .select({
               _id: 0,
               number: 1,
             })
-            .distinct("number"),
+            .distinct("number");
+        } catch (err) {
+          cafedra_number = "";
+        }
+
+        free.push({
+          id: freeWithCafedraId[i].id,
+          cafedra: freeWithCafedraId[i].cafedra,
+          cafedra_number,
           name: freeWithCafedraId[i].name,
           seats: freeWithCafedraId[i].seats,
           description: freeWithCafedraId[i].description,

@@ -37,22 +37,31 @@ block content
           input(type="number" min=0 max=10 name="couple" value=value_couple required)
       div(class="row")
         div(class="col-25")
-          label Кафедра*:
+          label=`Кафедра №${value_cafedra}*:`
         div(class="col-75")
           select(name="cafedra")
+            option(value="Current") Без змін
             option(value="") Не вибрано
             each item in cafedras_list
               option(value=item.id)=item.number
       div(class="row")
         div(class="col-25")
-          label Аудиторія№1*:
+          label=`Аудиторія№1(${value_classroom1})*:`
         div(class="col-75")
-          input(type="text" name="classroom1" value=value_classroom1 required)
+          select(name="classroom1")
+            option(value="Current") Без змін
+            option(value="") Не вибрано
+            each item in classrooms_list
+              option(value=item.id)=item.name
       div(class="row")
         div(class="col-25")
-          label Аудиторія№2:
+          label=`Аудиторія№2(${value_classroom2}):`
         div(class="col-75")
-          input(type="text" name="classroom2" value=value_classroom2)
+          select(name="classroom2")
+            option(value="Current") Без змін
+            option(value="") Не вибрано
+            each item in classrooms_list
+              option(value=item.id)=item.name
       div(class="row")
         div(class="col-25")
           label Дисципліна:

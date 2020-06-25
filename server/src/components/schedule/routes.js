@@ -14,8 +14,6 @@ const routeGroup = "schedule";
 router
   .route(`/sp/${routeGroup}/find/week`)
   .get(authenticationMiddleware(), controller.getSpFindWeek)
-  //.post(authenticationMiddleware(), controller.postSpFindWeek);
-
 
 router.post(`/sp/${routeGroup}/show`, authenticationMiddleware(), controller.postSpFindWeek);
 router.get(`/sp/${routeGroup}/date/:date/show/:id`, authenticationMiddleware(), controller.getShowByDate);
@@ -37,6 +35,8 @@ router
   .post(authenticationMiddleware(), controller.postSpEdit);
 
 router.post(`/sp/${routeGroup}/delete/:id`, authenticationMiddleware(), controller.postSpDelete);
+
+router.post(`/sp/${routeGroup}/drop`, authenticationMiddleware(), controller.postSpDrop);
 
 router.post(`/${routeGroup}/:kaf/:day`, controller.getSheduleForCafedra);
 router.get(`/${routeGroup}/:kaf/:day/any`, controller.getAnySchedule);

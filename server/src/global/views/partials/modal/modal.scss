@@ -1,30 +1,54 @@
 .modal {
   display: none;
   position: fixed;
-  z-index: 1;
+  z-index: 99;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.4);
+
   &-content {
-    background-color: #fefefe;
+    background-color: rgb(179, 207, 178);
     margin: 15% auto;
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
+    border: 3px solid rgb(0, 0, 0);
+    width: 45%;
+    border-radius: 17px;
+    z-index: 99;
+  }
+
+  &-upload {
+    margin: 15px 0;
+    font-size: 18px;
+  }
+
+  &-btn{
+    padding: 5px;
+    border-radius: 7px;
+    font-size: 18px;
+    background-color: rgb(243, 149, 125);
+    border: 1px solid black;
+  }
+
+  &-close{
+    padding: 5px;
+    border-radius: 7px;
+    font-size: 18px;
+    background-color: rgb(243, 149, 125);
+    border: 1px solid black;
   }
 }
 
 .close-x {
-  color: #aaa;
+  color: rgb(0, 0, 0);
   float: right;
-  font-size: 28px;
+  font-size: 38px;
   font-weight: bold;
   &:hover,
   &:focus {
-    color: black;
+    color: rgb(211, 15, 15);
     text-decoration: none;
     cursor: pointer;
   }

@@ -1,7 +1,7 @@
 style
   include /styles/menu.min.css
 
-nav.dws-menu(style="font-size: 26px;")
+nav.dws-menu(style="")
   ul
     li
       a(href="#") Розклад
@@ -11,11 +11,9 @@ nav.dws-menu(style="font-size: 26px;")
         li
           a(href="/admin/sp/schedule/find/week") Переглянути
         li
-          a(href="#") Імпорт
-        li
-          a(href="#") Експорт
-        li
-          a(href="#") Видалити
+          a(href="#")
+            form(action="/admin/sp/schedule/drop", method="post") 
+              button(type="submit" class="transparent-btn") Видалити
     li
       a(href="#") Кафедри
       ul
@@ -34,13 +32,13 @@ nav.dws-menu(style="font-size: 26px;")
           a(href="#") Групи
     li
       a(href="/admin/sp/couple/show") Пари
-    li
-      a(href="#") Архів
-      ul
-        li
-          a(href="#") Імпорт
-        li
-          a(href="#") Експорт
+    //- li
+    //-   a(href="#") Архів
+    //-   ul
+    //-     li
+    //-       a(href="#") Імпорт
+    //-     li
+    //-       a(href="#") Експорт
     li
       a(href="#") Налаштування
       ul
