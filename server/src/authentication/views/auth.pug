@@ -32,12 +32,10 @@ html(lang="uk")
                   div(class="col-25")
                     label(for="cafedra") Кафедра:
                   div(class="col-75")
-                    input(type="text" name="cafedra" value=cafedra placeholder="Введіть номер кафедри")
-                div(class="row")
-                  div(class="col-25")
-                    label(for="group") Група:
-                  div(class="col-75")
-                    input(type="text" name="group" value=group placeholder="Введіть номер групи")
+                    select(name="cafedra")
+                      option(value="") Не вибрано
+                      each item in cafedras_list
+                        option(value=item.id)=item.number
                 div(class="row")
                   div(class="col-25")
                     label(for="password") Пароль:

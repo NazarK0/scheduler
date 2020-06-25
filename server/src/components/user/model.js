@@ -4,7 +4,7 @@ const userSchema = mongoose.Schema({
     name: String,
     category:String,
     cafedra: String,
-    group:String,
+    //group:String,
     local:{
         email:String,
         password:String

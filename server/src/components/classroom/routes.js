@@ -43,10 +43,7 @@ router.post(
 );
 
 router.get(`/sp/${routeGroup}/free`, authenticationMiddleware(), controller.getSpFree);
-router
-  .route(`/sp/${routeGroup}/find/free`)
-  //.get(authenticationMiddleware(), controller.getSpFindFree)
-  .post(authenticationMiddleware(), controller.postSpFindFree);
+router.post(`/sp/${routeGroup}/find/free`, authenticationMiddleware(), controller.postSpFindFree);
 
 router.post(
   `/sp/cafedra/:cafedra_id/${routeGroup}/:classroom/couple/:couple/edit/free`,
@@ -57,6 +54,20 @@ router.post(
 router
   .route(`/sp/cafedra/:cafedra_id/${routeGroup}/:classroom/couple/:couple/free`)
   .post(authenticationMiddleware(), controller.postSpEditedFree);
+
+router.get(`/cafedra/${routeGroup}/show`, authenticationMiddleware(), controller.getCafedraShow);
+router.get(`/cafedra/${routeGroup}/show/root`, authenticationMiddleware(), controller.getCafedraShow_secret);
+
+router
+  .route(`/cafedra/${routeGroup}/add`)
+  .get(authenticationMiddleware(), controller.getCafedraAdd)
+  .post(authenticationMiddleware(), controller.postCafedraAdd);
+router
+  .route(`/cafedra/${routeGroup}/edit/:id`)
+  .get(authenticationMiddleware(), controller.getCafedraEdit)
+  .post(authenticationMiddleware(), controller.postCafedraEdit);
+
+  router.post(`/cafedra/${routeGroup}/delete/:id`, authenticationMiddleware(), controller.postCafedraDelete);
 
 
 module.exports = router;

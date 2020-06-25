@@ -200,6 +200,7 @@ async function getLesson(data, column1, column2, couple, date, school_week) {
             } else {
               const new_classroom1 = await new Classroom({
                 name: data[i][column1],
+                cafedra: null
               }).save();
               model.classroom1 = new_classroom1.id;
             }
@@ -247,6 +248,7 @@ async function getLesson(data, column1, column2, couple, date, school_week) {
             } else {
               const new_classroom2 = await new Classroom({
                 name: data[i][column2],
+                cafedra: null
               }).save();
               model.classroom2 = new_classroom2.id;
             }

@@ -1,4 +1,6 @@
 extends ../../../global/views/layouts/mainSp.pug
 
 block content
-    include ./weekForm.pug
+  form(action="/admin/sp/schedule/show" method="post")
+    input(type="week" name="week")
+    button(type="submit") Пошук

@@ -369,204 +369,170 @@ module.exports.getAnySchedule = async (req, res) => {
   const result = await anySchedule(kaf, day);
   return res.json(result);
 };
-module.exports.getShowCafWeek = async (req, res) => {
+module.exports.getCafedraFindWeek = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
-    const cafedra = await User.findById(userId).select({ _id: 0, cafedra: 1 });
-    const classrooms = await Cafedra.findOne({ name: cafedra.cafedra }).select({
-      _id: 0,
-      classrooms: 1,
-    });
-
-    const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
-    const schedule = await Schedule.find()
-      .or([
-        { classroom1: classrooms.classrooms },
-        { classroom2: classrooms.classrooms },
-        { cafedra: cafedra.cafedra },
-      ])
-      .where({ date: dates[0] })
-      .select({
-        _id: 1,
-        group: 2,
-        couple: 3,
-        subject: 4,
-        lesson_type: 5,
-        teacher1: 6,
-        teacher2: 7,
-        teacher1_1: 8,
-        teacher2_1: 9,
-        classroom1: 10,
-        classroom2: 11,
-      })
-      .sort({ couple: "asc", group: "asc" });
-
-    const dateTimeFormat = new Intl.DateTimeFormat("uk", {
-      year: "numeric",
-      month: "long",
-      day: "2-digit",
-    });
-    const labels = dates.map((date) => dateTimeFormat.format(date));
-
-    return res.status(200).render(path.join(__dirname, "views", "cafByDayList"), {
-      data: schedule,
-      labels,
-      cafedra: cafedra.cafedra,
-      domain,
-      day: 0,
-    });
+    return res.status(200).render(path.join(__dirname, "views", "cafFindWeek"));
   } else return res.status(200).redirect("/signin");
 };
-module.exports.getShowCafWeek_secret = async (req, res) => {
+module.exports.postCafedraFindWeek = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
-    const cafedra = await User.findById(userId).select({ _id: 0, cafedra: 1 });
-    const classrooms = await Cafedra.findOne({ name: cafedra.cafedra }).select({
-      _id: 0,
-      classrooms: 1,
-    });
+    const { week } = req.body;
+    const mondayDate = moment(week, "YYYY-Wgg").toISOString();
+    const cafedra = await User.findById(userId).select({ _id: 1, number:2});
 
-    const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
-    const schedule = await Schedule.find()
-      .or([
-        { classroom1: classrooms.classrooms },
-        { classroom2: classrooms.classrooms },
-        { cafedra: cafedra.cafedra },
-      ])
-      .where({ date: dates[0] })
-      .select({
-        _id: 1,
-        group: 2,
-        couple: 3,
-        subject: 4,
-        lesson_type: 5,
-        teacher1: 6,
-        teacher2: 7,
-        teacher1_1: 8,
-        teacher2_1: 9,
-        classroom1: 10,
-        classroom2: 11,
-      })
-      .sort({ couple: "asc", group: "asc" });
+    if (mondayDate && mondayDate != "Invalid date") {
+      const schedule = await Schedule.find({ date: mondayDate, cafedra: cafedra.id}).sort({
+        group: "asc",
+        couple: "asc",
+      });
 
-    const dateTimeFormat = new Intl.DateTimeFormat("uk", {
-      year: "numeric",
-      month: "long",
-      day: "2-digit",
-    });
-    const labels = dates.map((date) => dateTimeFormat.format(date));
+      for (let i = 0; i < schedule.length; i++) {
+        schedule[i].cafedra = cafedra.number;
 
-    return res.status(200).render(path.join(__dirname, "views", "cafByDayList_secret"), {
-      data: schedule,
-      labels,
-      cafedra: cafedra.cafedra,
-      domain,
-      day: 0,
-    });
+        schedule[i].classroom1 = (
+          await Classroom.findById(schedule[i].classroom1)
+            .select({ _id: 0, name: 1 })
+            .distinct("name")
+        )[0];
+
+        schedule[i].classroom2 = (
+          await Classroom.findById(schedule[i].classroom2)
+            .select({ _id: 0, name: 1 })
+            .distinct("name")
+        )[0];
+      }
+      const labels = [];
+
+      labels.push(`${moment(mondayDate).format("DD.MM.YYYY")} Пн`);
+      labels.push(`${moment(mondayDate).add(1, "days").format("DD.MM.YYYY")} Вт`);
+      labels.push(`${moment(mondayDate).add(2, "days").format("DD.MM.YYYY")} Ср`);
+      labels.push(`${moment(mondayDate).add(3, "days").format("DD.MM.YYYY")} Чт`);
+      labels.push(`${moment(mondayDate).add(4, "days").format("DD.MM.YYYY")} Пт`);
+      labels.push(`${moment(mondayDate).add(5, "days").format("DD.MM.YYYY")} Сб`);
+      //labels.push(`${moment(mondayDate).add(6, "days").format("DD.MM.YYYY")} Нд`);
+
+      
+      //console.log(cafedra)
+
+      return res.status(200).render(path.join(__dirname, "views", "cafByDayList"), {
+        data: schedule,
+        labels,
+        date: moment(mondayDate).format("DD.MM.YYYY"),
+        day: 0,
+      });
+    }
+
+    return res.status(200).render(path.join(__dirname, "views", "spFindWeek"));
   } else return res.status(200).redirect("/signin");
 };
-module.exports.getShowCafDay = async (req, res) => {
+
+module.exports.postCafedraFindWeek_secret = async(req, res)=>{
+
+}
+module.exports.getCafShowByDate = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
-    const { idx } = req.params;
-    const cafedra = await User.findById(userId).select({ _id: 0, cafedra: 1 });
-    const classrooms = await Cafedra.findOne({ name: cafedra.cafedra }).select({
-      _id: 0,
-      classrooms: 1,
-    });
-    const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
-    const schedule = await Schedule.find()
-      .or([
-        { classroom1: classrooms.classrooms },
-        { classroom2: classrooms.classrooms },
-        { cafedra: cafedra.cafedra },
-        { teacher1: classrooms.classrooms },
-        { teacher2: classrooms.classrooms },
-        { teacher1_1: classrooms.classrooms },
-        { teacher2_1: classrooms.classrooms },
-      ])
-      .where({ date: dates[idx] })
-      .select({
-        group: 1,
-        couple: 2,
-        subject: 3,
-        lesson_type: 4,
-        teacher1: 5,
-        teacher2: 6,
-        teacher1_1: 7,
-        teacher2_1: 8,
-        classroom1: 9,
-        classroom2: 10,
-        _id: 11,
-      })
-      .sort({ couple: "asc", group: "asc" });
+    const { date, id } = req.params;
+    const mondayDate = moment(date, "DD.MM.YYYY");
 
-    const dateTimeFormat = new Intl.DateTimeFormat("uk", {
-      year: "numeric",
-      month: "long",
-      day: "2-digit",
-    });
-    const labels = dates.map((date) => dateTimeFormat.format(date));
+    if (mondayDate && mondayDate != "Invalid date") {
+      const cafedra = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+      const schedule = await Schedule.find({
+        date: moment(mondayDate).add(id, "days").toISOString(),
+        cafedra:cafedra.id
+      }).sort({ group: "asc", couple: "asc" });
 
-    return res.status(200).render(path.join(__dirname, "views", "cafByDayList"), {
-      data: schedule,
-      labels,
-      day: idx,
-      cafedra: cafedra.cafedra,
-      domain,
-    });
+      for (let i = 0; i < schedule.length; i++) {
+        schedule[i].cafedra = (
+          await Cafedra.findById(schedule[i].cafedra)
+            .select({ _id: 0, number: 1 })
+            .distinct("number")
+        )[0];
+
+        schedule[i].classroom1 = (
+          await Classroom.findById(schedule[i].classroom1)
+            .select({ _id: 0, name: 1 })
+            .distinct("name")
+        )[0];
+
+        schedule[i].classroom2 = (
+          await Classroom.findById(schedule[i].classroom2)
+            .select({ _id: 0, name: 1 })
+            .distinct("name")
+        )[0];
+      }
+      const labels = [];
+
+      labels.push(`${moment(mondayDate).format("DD.MM.YYYY")} Пн`);
+      labels.push(`${moment(mondayDate).add(1, "days").format("DD.MM.YYYY")} Вт`);
+      labels.push(`${moment(mondayDate).add(2, "days").format("DD.MM.YYYY")} Ср`);
+      labels.push(`${moment(mondayDate).add(3, "days").format("DD.MM.YYYY")} Чт`);
+      labels.push(`${moment(mondayDate).add(4, "days").format("DD.MM.YYYY")} Пт`);
+      labels.push(`${moment(mondayDate).add(5, "days").format("DD.MM.YYYY")} Сб`);
+      //labels.push(`${moment(mondayDate).add(6, "days").format("DD.MM.YYYY")} Нд`);
+
+      return res.status(200).render(path.join(__dirname, "views", "cafByDayList"), {
+        data: schedule,
+        labels,
+        day: id,
+        date: moment(mondayDate).format("DD.MM.YYYY"),
+      });
+    }
+    return res.status(200).render(path.join(__dirname, "views", "spFindWeek"));
   } else return res.status(200).redirect("/signin");
 };
-module.exports.getShowCafDay_secret = async (req, res) => {
+module.exports.getCafShowByDate_secret = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
-    const { idx } = req.params;
-    const cafedra = await User.findById(userId).select({ _id: 0, cafedra: 1 });
-    const classrooms = await Cafedra.findOne({ name: cafedra.cafedra }).select({
-      _id: 0,
-      classrooms: 1,
-    });
-    const dates = await Schedule.find().select({ _id: 0, date: 1 }).distinct("date");
-    const schedule = await Schedule.find()
-      .or([
-        { classroom1: classrooms.classrooms },
-        { classroom2: classrooms.classrooms },
-        { cafedra: cafedra.cafedra },
-        { teacher1: classrooms.classrooms },
-        { teacher2: classrooms.classrooms },
-        { teacher1_1: classrooms.classrooms },
-        { teacher2_1: classrooms.classrooms },
-      ])
-      .where({ date: dates[idx] })
-      .select({
-        group: 1,
-        couple: 2,
-        subject: 3,
-        lesson_type: 4,
-        teacher1: 5,
-        teacher2: 6,
-        teacher1_1: 7,
-        teacher2_1: 8,
-        classroom1: 9,
-        classroom2: 10,
-        _id: 11,
-      })
-      .sort({ couple: "asc", group: "asc" });
+     const { date, id } = req.params;
+     const mondayDate = moment(date, "DD.MM.YYYY");
 
-    const dateTimeFormat = new Intl.DateTimeFormat("uk", {
-      year: "numeric",
-      month: "long",
-      day: "2-digit",
-    });
-    const labels = dates.map((date) => dateTimeFormat.format(date));
+     if (mondayDate && mondayDate != "Invalid date") {
+       const cafedra = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+       const schedule = await Schedule.find({
+         date: moment(mondayDate).add(id, "days").toISOString(),
+         cafedra: cafedra.id,
+       }).sort({ group: "asc", couple: "asc" });
 
-    return res.status(200).render(path.join(__dirname, "views", "cafByDayList_secret"), {
-      data: schedule,
-      labels,
-      day: idx,
-      cafedra: cafedra.cafedra,
-      domain,
-    });
+       for (let i = 0; i < schedule.length; i++) {
+         schedule[i].cafedra = (
+           await Cafedra.findById(schedule[i].cafedra)
+             .select({ _id: 0, number: 1 })
+             .distinct("number")
+         )[0];
+
+         schedule[i].classroom1 = (
+           await Classroom.findById(schedule[i].classroom1)
+             .select({ _id: 0, name: 1 })
+             .distinct("name")
+         )[0];
+
+         schedule[i].classroom2 = (
+           await Classroom.findById(schedule[i].classroom2)
+             .select({ _id: 0, name: 1 })
+             .distinct("name")
+         )[0];
+       }
+       const labels = [];
+
+       labels.push(`${moment(mondayDate).format("DD.MM.YYYY")} Пн`);
+       labels.push(`${moment(mondayDate).add(1, "days").format("DD.MM.YYYY")} Вт`);
+       labels.push(`${moment(mondayDate).add(2, "days").format("DD.MM.YYYY")} Ср`);
+       labels.push(`${moment(mondayDate).add(3, "days").format("DD.MM.YYYY")} Чт`);
+       labels.push(`${moment(mondayDate).add(4, "days").format("DD.MM.YYYY")} Пт`);
+       labels.push(`${moment(mondayDate).add(5, "days").format("DD.MM.YYYY")} Сб`);
+       //labels.push(`${moment(mondayDate).add(6, "days").format("DD.MM.YYYY")} Нд`);
+
+       return res.status(200).render(path.join(__dirname, "views", "cafByDayList"), {
+         data: schedule,
+         labels,
+         day: id,
+         date: moment(mondayDate).format("DD.MM.YYYY"),
+       });
+     }
+     return res.status(200).render(path.join(__dirname, "views", "spFindWeek_secret"));
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getCafedraEdit = async (req, res) => {

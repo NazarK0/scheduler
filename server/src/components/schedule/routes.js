@@ -10,7 +10,6 @@ const excel_schedule = upload_path.single("upload_schedule");
 
 const routeGroup = "schedule";
 
-
 router
   .route(`/sp/${routeGroup}/find/week`)
   .get(authenticationMiddleware(), controller.getSpFindWeek)
@@ -40,33 +39,39 @@ router.post(`/sp/${routeGroup}/drop`, authenticationMiddleware(), controller.pos
 
 router.post(`/${routeGroup}/:kaf/:day`, controller.getSheduleForCafedra);
 router.get(`/${routeGroup}/:kaf/:day/any`, controller.getAnySchedule);
-router.get(
+
+// cafedra routes
+router
+  .route(`/cafedra/${routeGroup}/find/week`)
+  .get(authenticationMiddleware(), controller.getCafedraFindWeek);
+
+router.post(
   `/cafedra/${routeGroup}/show/secret-page`,
   authenticationMiddleware(),
-  controller.getShowCafWeek_secret
+  controller.postCafedraFindWeek_secret
 );
 router.get(
-  `/cafedra/${routeGroup}/show/:idx/secret-page`,
+  `/cafedra/${routeGroup}/date/:date/show/:id/secret-page`,
   authenticationMiddleware(),
-  controller.getShowCafDay_secret
+  controller.getCafShowByDate_secret
 );
-router.get(`/cafedra/${routeGroup}/show`, authenticationMiddleware(), controller.getShowCafWeek);
+router.post(`/cafedra/${routeGroup}/show`, authenticationMiddleware(), controller.postCafedraFindWeek);
 router.get(
-  `/cafedra/${routeGroup}/show/:idx`,
+  `/cafedra/${routeGroup}/date/:date/show/:id`,
   authenticationMiddleware(),
-  controller.getShowCafDay
+  controller.getCafShowByDate
 );
 
 router
-  .route(`/cafedra/${routeGroup}/edit/:id`)
+  .route(`/cafedra/${routeGroup}/date/:date/day/:day/edit/:id`)
   .get(authenticationMiddleware(), controller.getCafedraEdit)
   .post(authenticationMiddleware(), controller.postCafedraEdit);
 router
-  .route(`/cafedra/${routeGroup}/:day/add`)
+  .route(`/cafedra/${routeGroup}/date/:date/day/:day/add`)
   .get(authenticationMiddleware(), controller.getCafedraAdd)
   .post(authenticationMiddleware(), controller.postCafedraAdd);
 router.post(
-  `/cafedra/${routeGroup}/delete/:id`,
+  `/cafedra/${routeGroup}/date/delete/:id`,
   authenticationMiddleware(),
   controller.postCafedraDelete
 );

@@ -9,13 +9,13 @@ block content
         thead
           tr
             th №п/п 
-            th Аудиторії
+            th Аудиторія
             th Кількість місць
             th Опис
         tbody
           each item in data
             tr
               td= ++counter
-              td= item
-              td в процесі розробки
-              td в процесі розробки
+              td= item.name
+              td= item.seats
+              td= item.description

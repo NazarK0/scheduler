@@ -1,0 +1,6 @@
+extends ../../../global/views/layouts/mainCafedra.pug
+
+block content
+  form(action="/admin/cafedra/schedule/show", method="post")
+    input(type="week", name="week")
+    button(type="submit") Пошук

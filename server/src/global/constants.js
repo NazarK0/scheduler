@@ -1,7 +1,7 @@
 module.exports.userTypes = {
-  MODERATOR: "Модератор",
+  //MODERATOR: "Модератор",
   SP: "Навчальний відділ",
   CAFEDRA: "Кафедра",
-  TEACHER: "Викладач",
-  CADET: "Курсант",
+ // TEACHER: "Викладач",
+  //CADET: "Курсант",
 };

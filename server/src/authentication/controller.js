@@ -1,5 +1,6 @@
 const path = require("path");
 const User = require("../components/user/model");
+const Cafedra = require("../components/cafedra/model");
 const { userTypes } = require('../global/constants')
 
 const view = path.join(__dirname, "views", "auth");
@@ -16,11 +17,20 @@ module.exports.postSignIn = async (req, res) => {
   res.redirect("/admin");
 };
 module.exports.getSignUp = async (req, res) => {
-  res.render(view, { title: "Реєстрація", type: viewTypes.signUp, user_types});
+  const cafedras_list = await Cafedra.find().select({ _id: 1, number: 2 }).sort({ number: "asc" });
+
+  cafedras_list.sort((a, b) => {
+    if (isFinite(a.number) && isFinite(b.number)) {
+      return Number(a.number) - Number(b.number);
+    } else {
+      return a.number > b.number;
+    }
+  });
+  res.render(view, { title: "Реєстрація", type: viewTypes.signUp, user_types,cafedras_list});
 };
 module.exports.postSignUp = async (req, res) => {
-  const { name, user_type, cafedra, group, email, password, password2 } = req.body;
-  const data = { name, cafedra, group, email };
+  const { name, user_type, cafedra, email, password, password2 } = req.body;
+  const data = { name, cafedra, email };
 
   const user = await User.findOne({ "local.email": email });
 
@@ -45,7 +55,6 @@ module.exports.postSignUp = async (req, res) => {
       name,
       category: user_type,
       cafedra,
-      group,
       local: { email, password },
     };
     await new User(userData).save();

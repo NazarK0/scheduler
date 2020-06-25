@@ -3,6 +3,7 @@ const moment = require("moment");
 const Cafedra = require("../cafedra/model");
 const Schedule = require("../schedule/model");
 const Classroom = require("./model");
+const User = require("../user/model");
 const Couple = require("../couple/model");
 const { userTypes } = require("../../global/constants");
 const hasAccess = require("../../API/hasAccess");
@@ -223,14 +224,14 @@ const postSpFindFree = async (req, res) => {
       }, []);
 
       const busy = [...new Set(busy_array)].sort();
-      console.log(busy)
+      console.log(busy);
       const freeWithCafedraId = await Classroom.find({ _id: { $nin: busy } });
       const free = [];
 
       for (let i = 0; i < freeWithCafedraId.length; i++) {
         let cafedra_number;
         try {
-           cafedra_number = await Cafedra.findById(freeWithCafedraId[i].cafedra)
+          cafedra_number = await Cafedra.findById(freeWithCafedraId[i].cafedra)
             .select({
               _id: 0,
               number: 1,
@@ -309,6 +310,85 @@ const postSpEditedFree = async (req, res) => {
   } else return res.status(200).redirect("/signin");
 };
 
+const getCafedraShow = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const user = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+    const classrooms = await Classroom.find({ cafedra: user.cafedra });
+
+    return res.status(200).render(path.join(__dirname, "views", "cafedraClassroomsList"), {
+      data: classrooms,
+    });
+  } else return res.status(200).redirect("/signin");
+};
+
+const getCafedraShow_secret = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const user = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+    const classrooms = await Classroom.find({ cafedra: user.cafedra });
+
+    return res.status(200).render(path.join(__dirname, "views", "cafedraClassroomsList_secret"), {
+      data: classrooms,
+    });
+  } else return res.status(200).redirect("/signin");
+};
+
+const getCafedraAdd = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    return res.status(200).render(path.join(__dirname, "views", "editClassroomCafedra"), {
+      mode: "add",
+    });
+  } else return res.status(200).redirect("/signin");
+};
+
+const postCafedraAdd = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const { name, seats, description } = req.body;
+    const { cafedra } = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+
+    await new Classroom({ name, seats, description, cafedra }).save();
+
+    return res.status(200).redirect("./show/root");
+  } else return res.status(200).redirect("/signin");
+};
+const getCafedraEdit = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const {id} = req.params;
+    const editing = await Classroom.findById(id);
+    return res.status(200).render(path.join(__dirname, "views", "editClassroomCafedra"), {
+      mode: "edit",
+      data: editing
+    });
+  } else return res.status(200).redirect("/signin");
+};
+
+const postCafedraEdit = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const { id } = req.params;
+    const { name, seats, description } = req.body;
+    
+    await Classroom.findByIdAndUpdate(id,{ name, seats, description });
+
+    return res.status(200).redirect("../show/root");
+  } else return res.status(200).redirect("/signin");
+};
+
+const postCafedraDelete = async (req, res) =>{
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const { id } = req.params;
+
+    await Classroom.findByIdAndDelete(id);
+
+    return res.status(200).redirect("../show/root");
+  } else return res.status(200).redirect("/signin");
+}
+
 module.exports = {
   getSpShow,
   getSpShowByCafedra,
@@ -325,4 +405,11 @@ module.exports = {
   postSpFindFree,
   postSpEditFree,
   postSpEditedFree,
+  getCafedraShow,
+  getCafedraShow_secret,
+  getCafedraAdd,
+  postCafedraAdd,
+  getCafedraEdit,
+  postCafedraEdit,
+  postCafedraDelete
 };

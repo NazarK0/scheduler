@@ -6,10 +6,11 @@ block content
   h2 Розклад
   - if (data)
     a(href=`http://${domain}/cafedra/${cafedra}/${Number(day)+1}` style="color: white;" class="onscreen-btn" target="_blank") На екран
+    include ./cafWeekForm.pug
     ul(class="dates")
       each label,index in labels
         li
-          a(href=`/admin/cafedra/schedule/show/${index}`)=label
+          a(href=`/admin/cafedra/schedule/date/${date}/show/${index}`)=label
     div(class="table-wrapper")
       table(class="fl-table")
         thead
