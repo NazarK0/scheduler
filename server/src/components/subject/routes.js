@@ -31,4 +31,16 @@ router.post(
   controller.postSpDelete
 );
 
+router.get(`/cafedra/${routeGroup}/show`, authenticationMiddleware(), controller.getCafedraShow);
+router.get(`/cafedra/${routeGroup}/show/root`, authenticationMiddleware(), controller.getCafedraShow_secret);
+
+router
+  .route(`/cafedra/${routeGroup}/add`)
+  .get(authenticationMiddleware(), controller.getCafedraAdd)
+  .post(authenticationMiddleware(), controller.postCafedraAdd);
+router
+  .route(`/cafedra/${routeGroup}/edit/:id`)
+  .get(authenticationMiddleware(), controller.getCafedraEdit)
+  .post(authenticationMiddleware(), controller.postCafedraEdit);
+
 module.exports = router;

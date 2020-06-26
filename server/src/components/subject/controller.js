@@ -1,6 +1,7 @@
 const path = require("path");
 const Cafedra = require("../cafedra/model");
 const Schedule = require("../schedule/model");
+const User = require("../user/model");
 const Subject = require("./model");
 const { userTypes } = require("../../global/constants");
 const hasAccess = require("../../API/hasAccess");
@@ -25,13 +26,13 @@ const getSpShowByCafedra = async (req, res) => {
 
     labels.sort((a, b) => Number(a.number) - Number(b.number));
 
-    const subjects = await Subject.find({ cafedra: id }).sort({"abbreviation": "asc"});
+    const subjects = await Subject.find({ cafedra: id }).sort({ abbreviation: "asc" });
 
     return res.status(200).render(path.join(__dirname, "views", "spSubjectsList"), {
       data: subjects,
       labels,
       cafedra_id: id,
-      current_cafedra:number
+      current_cafedra: number,
     });
   } else return res.status(200).redirect("/signin");
 };
@@ -114,6 +115,75 @@ const postSpDelete = async (req, res) => {
   } else return res.status(200).redirect("/signin");
 };
 
+const getCafedraShow = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const { cafedra } = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+    const subjects = await Subject.find({ cafedra }).sort({ abbreviation: "asc" });
+
+    return res
+      .status(200)
+      .render(path.join(__dirname, "views", "cafedraSubjectsList"), { data: subjects });
+  } else return res.status(200).redirect("/signin");
+};
+
+const getCafedraShow_secret = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const { cafedra } = await User.findById(userId).select({ _id: 0, cafedra: 1 });
+    const subjects = await Subject.find({ cafedra }).sort({ abbreviation: "asc" });
+
+    return res
+      .status(200)
+      .render(path.join(__dirname, "views", "cafedraSubjectsList_secret"), { data: subjects });
+  } else return res.status(200).redirect("/signin");
+};
+
+const getCafedraAdd = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    return res
+      .status(200)
+      .render(path.join(__dirname, "views", "cafedraEditSubject"), { mode: "add" });
+  } else return res.status(200).redirect("/signin");
+};
+
+const postCafedraAdd = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const { abbreviation, title } = req.body;
+
+    if (abbreviation || title) {
+      await new Subject({ abbreviation, title }).save();
+    }
+
+    return res.status(200).redirect("./show/root");
+  } else return res.status(200).redirect("/signin");
+};
+const getCafedraEdit = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const { id } = req.params;
+    const editing = await Subject.findById(id);
+
+    return res
+      .status(200)
+      .render(path.join(__dirname, "views", "cafedraEditSubject"), { data: editing, mode: "edit" });
+  } else return res.status(200).redirect("/signin");
+};
+
+const postCafedraEdit = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const { id } = req.params;
+    const { abbreviation, title } = req.body;
+
+    await Subject.findByIdAndUpdate(id, { abbreviation, title });
+
+    return res.status(200).redirect("../show/root");
+  } else return res.status(200).redirect("/signin");
+};
+
 module.exports = {
   getSpShow,
   getSpShowByCafedra,
@@ -123,4 +193,10 @@ module.exports = {
   getSpEdit,
   postSpEdit,
   postSpDelete,
+  getCafedraShow,
+  getCafedraShow_secret,
+  getCafedraAdd,
+  postCafedraAdd,
+  getCafedraEdit,
+  postCafedraEdit,
 };

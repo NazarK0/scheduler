@@ -314,7 +314,7 @@ const getCafedraShow = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
     const user = await User.findById(userId).select({ _id: 0, cafedra: 1 });
-    const classrooms = await Classroom.find({ cafedra: user.cafedra });
+    const classrooms = await Classroom.find({ cafedra: user.cafedra }).sort({ name: "asc" });
 
     return res.status(200).render(path.join(__dirname, "views", "cafedraClassroomsList"), {
       data: classrooms,
@@ -326,7 +326,7 @@ const getCafedraShow_secret = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
     const user = await User.findById(userId).select({ _id: 0, cafedra: 1 });
-    const classrooms = await Classroom.find({ cafedra: user.cafedra });
+    const classrooms = await Classroom.find({ cafedra: user.cafedra }).sort({ name: "asc" });
 
     return res.status(200).render(path.join(__dirname, "views", "cafedraClassroomsList_secret"), {
       data: classrooms,
@@ -357,11 +357,11 @@ const postCafedraAdd = async (req, res) => {
 const getCafedraEdit = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
-    const {id} = req.params;
+    const { id } = req.params;
     const editing = await Classroom.findById(id);
     return res.status(200).render(path.join(__dirname, "views", "editClassroomCafedra"), {
       mode: "edit",
-      data: editing
+      data: editing,
     });
   } else return res.status(200).redirect("/signin");
 };
@@ -371,14 +371,14 @@ const postCafedraEdit = async (req, res) => {
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
     const { id } = req.params;
     const { name, seats, description } = req.body;
-    
-    await Classroom.findByIdAndUpdate(id,{ name, seats, description });
+
+    await Classroom.findByIdAndUpdate(id, { name, seats, description });
 
     return res.status(200).redirect("../show/root");
   } else return res.status(200).redirect("/signin");
 };
 
-const postCafedraDelete = async (req, res) =>{
+const postCafedraDelete = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
     const { id } = req.params;
@@ -387,7 +387,7 @@ const postCafedraDelete = async (req, res) =>{
 
     return res.status(200).redirect("../show/root");
   } else return res.status(200).redirect("/signin");
-}
+};
 
 module.exports = {
   getSpShow,
@@ -411,5 +411,5 @@ module.exports = {
   postCafedraAdd,
   getCafedraEdit,
   postCafedraEdit,
-  postCafedraDelete
+  postCafedraDelete,
 };

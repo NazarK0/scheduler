@@ -4,9 +4,9 @@ block content
   style
     include /styles/main.css
   h2 Розклад
+  include ./cafWeekForm.pug
   - if (data)
     a(href=`http://${domain}/cafedra/${cafedra}/${Number(day)+1}` style="color: white;" class="onscreen-btn" target="_blank") На екран
-    include ./cafWeekForm.pug
     ul(class="dates")
       each label,index in labels
         li

@@ -45,13 +45,8 @@ router
   .route(`/cafedra/${routeGroup}/find/week`)
   .get(authenticationMiddleware(), controller.getCafedraFindWeek);
 
-router.post(
-  `/cafedra/${routeGroup}/show/secret-page`,
-  authenticationMiddleware(),
-  controller.postCafedraFindWeek_secret
-);
 router.get(
-  `/cafedra/${routeGroup}/date/:date/show/:id/secret-page`,
+  `/cafedra/${routeGroup}/date/:date/show/:id/root`,
   authenticationMiddleware(),
   controller.getCafShowByDate_secret
 );
@@ -71,7 +66,7 @@ router
   .get(authenticationMiddleware(), controller.getCafedraAdd)
   .post(authenticationMiddleware(), controller.postCafedraAdd);
 router.post(
-  `/cafedra/${routeGroup}/date/delete/:id`,
+  `/cafedra/${routeGroup}/delete/:id`,
   authenticationMiddleware(),
   controller.postCafedraDelete
 );

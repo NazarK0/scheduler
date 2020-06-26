@@ -2,7 +2,7 @@ extends ../../../global/views/layouts/mainCafedra.pug
 
 block content
   - const title = mode === "edit" ? "Редагувати" : mode === "add" ? "Додати" : "";
-  - const action = mode === "edit" ? `/admin/cafedra/schedule/edit/${data._id}`: mode === "add" ? `/admin/cafedra/schedule/${day}/add` : "/admin";
+  - const action = mode === "edit" ? `/admin/cafedra/schedule/date/${date}/day/${day}/edit/${data._id}`: mode === "add" ? `/admin/cafedra/schedule/date/${date}/day/${day}/add` : "/admin";
   - const value_group = data? data.group : "";
   - const value_couple = data? data.couple : "";
   - const value_classroom1 = data? data.classroom1 : "";
@@ -22,50 +22,58 @@ block content
           div(class="col-25")
             label Група*:
           div(class="col-75")
-            input(type="text" name="group" value=value_group required placeholder="Група")
+            input(type="text" name="group" value=value_group required)
         div(class="row")
           div(class="col-25")
             label Пара*:
           div(class="col-75")
-            input(type="number" min=1 max=7 name="couple" value=value_couple required placeholder="Пара")
+            input(type="number" min=0 max=10 name="couple" value=value_couple required)
         div(class="row")
           div(class="col-25")
-            label Аудиторія№1*:
+            label=`Аудиторія№1(${value_classroom1})*:`
           div(class="col-75")
-            input(type="text" name="classroom1" value=value_classroom1 required placeholder="Аудиторія №1")
+            select(name="classroom1")
+              option(value="Current") Без змін
+              option(value="") Не вибрано
+              each item in classrooms_list
+                option(value=item.id)=item.name
         div(class="row")
           div(class="col-25")
-            label Аудиторія№2:
+            label=`Аудиторія№2(${value_classroom2}):`
           div(class="col-75")
-            input(type="text" name="classroom2" value=value_classroom2 placeholder="Аудиторія№2")
+            select(name="classroom2")
+              option(value="Current") Без змін
+              option(value="") Не вибрано
+              each item in classrooms_list
+                option(value=item.id)=item.name
         div(class="row")
           div(class="col-25")
             label Дисципліна:
           div(class="col-75")
-            input(type="text" name="subject" value=value_subject placeholder="Дисципліна")
+            input(type="text" name="subject" value=value_subject)
         div(class="row")
           div(class="col-25")
             label Заняття:
           div(class="col-75")
-            input(type="text" name="lesson_type" value=value_lessontype placeholder="Заняття")
+            input(type="text" name="lesson_type" value=value_lessontype)
         div(class="row")
           div(class="col-25")
             label Викладач №1:
           div(class="col-75")
-            input(type="text" name="teacher1" value=value_teacher1 placeholder="Викладач №1")
+            input(type="text" name="teacher1" value=value_teacher1)
         div(class="row")
           div(class="col-25")
             label Викладач №2:
           div(class="col-75")
-            input(type="text" name="teacher2" value=value_teacher2 placeholder="Викладач №2")
+            input(type="text" name="teacher2" value=value_teacher2)
         div(class="row")
           div(class="col-25")
             label Викладач №3:
           div(class="col-75")
-            input(type="text" name="teacher1_1" value=value_teacher1_1 placeholder="Викладач №3")
+            input(type="text" name="teacher1_1" value=value_teacher1_1)
         div(class="row")
           div(class="col-25")
             label Викладач №4:
           div(class="col-75")
-            input(type="text" name="teacher2_1" value=value_teacher2_1 placeholder="Викладач №4")
+            input(type="text" name="teacher2_1" value=value_teacher2_1)
         button(type="submit" class="signInButton") Зберегти
