@@ -556,11 +556,12 @@ module.exports.getCafedraEdit = async (req, res) => {
 
     editing.classroom1 = (
       await Classroom.findById(editing.classroom1).select({ _id: 0, name: 1 }).distinct("name")
-    )[0];
+    )[0] ?? ""
 
     editing.classroom2 = (
       await Classroom.findById(editing.classroom2).select({ _id: 0, name: 1 }).distinct("name")
-    )[0];
+    )[0] ?? ""
+
 
     const classrooms_list = await Classroom.find()
       .select({ _id: 1, name: 2 })
@@ -621,7 +622,7 @@ module.exports.postCafedraEdit = async (req, res) => {
 
     await Schedule.findByIdAndUpdate(id, update_data);
 
-    return res.redirect(`../../show/${day}/root`);
+    return res.redirect(`../../../show/${day}/root`);
   } else return res.status(200).redirect("/signin");
 };
 module.exports.getCafedraAdd = async (req, res) => {
@@ -701,15 +702,12 @@ module.exports.postCafedraAdd = async (req, res) => {
 module.exports.postCafedraDelete = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
-    const { id } = req.params;
+    const { id,date } = req.params;
     const deleted = await Schedule.findByIdAndDelete(id).select({ _id: 0, date: 1 });
-    console.log(deleted);
-    return res.status(200).redirect(`../date/${date}/show/${index}`);
-  } else return res.status(200).redirect("/signin");
-};
-module.exports.getClassroom = async (req, res) => {
-  const { kaf } = req.params;
+    
+    const dayOfWeek = moment(deleted.date).format("d") - 1;
+    const monday = moment(deleted.date).subtract(dayOfWeek, "days").format("DD.MM.YYYY");
 
-  let result = await Cafedra.findOne({ name: kaf });
-  return res.json(result.classrooms);
+    return res.status(200).redirect(`../date/${monday}/show/${dayOfWeek}/root`);
+  } else return res.status(200).redirect("/signin");
 };

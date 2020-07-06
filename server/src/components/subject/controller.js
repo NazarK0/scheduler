@@ -152,9 +152,10 @@ const postCafedraAdd = async (req, res) => {
   const userId = req.session.passport.user;
   if (await hasAccess(userId, userTypes.CAFEDRA)) {
     const { abbreviation, title } = req.body;
+    const { cafedra } = await User.findById(userId).select({ _id: 0, cafedra: 1 });
 
     if (abbreviation || title) {
-      await new Subject({ abbreviation, title }).save();
+      await new Subject({ abbreviation, title, cafedra }).save();
     }
 
     return res.status(200).redirect("./show/root");
@@ -183,6 +184,16 @@ const postCafedraEdit = async (req, res) => {
     return res.status(200).redirect("../show/root");
   } else return res.status(200).redirect("/signin");
 };
+const postCafedraDelete = async (req, res) => {
+  const userId = req.session.passport.user;
+  if (await hasAccess(userId, userTypes.CAFEDRA)) {
+    const { id } = req.params;
+   
+    await Subject.findByIdAndDelete(id);
+
+    return res.status(200).redirect("../show/root");
+  } else return res.status(200).redirect("/signin");
+};
 
 module.exports = {
   getSpShow,
@@ -199,4 +210,5 @@ module.exports = {
   postCafedraAdd,
   getCafedraEdit,
   postCafedraEdit,
+  postCafedraDelete
 };

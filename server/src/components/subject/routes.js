@@ -43,4 +43,11 @@ router
   .get(authenticationMiddleware(), controller.getCafedraEdit)
   .post(authenticationMiddleware(), controller.postCafedraEdit);
 
+router.post(
+  `/cafedra/${routeGroup}/delete/:id`,
+  authenticationMiddleware(),
+  controller.postCafedraDelete
+);
+
+
 module.exports = router;

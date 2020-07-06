@@ -33,6 +33,15 @@ module.exports.postSignUp = async (req, res) => {
   const data = { name, cafedra, email };
 
   const user = await User.findOne({ "local.email": email });
+  const cafedras_list = await Cafedra.find().select({ _id: 1, number: 2 }).sort({ number: "asc" });
+
+   cafedras_list.sort((a, b) => {
+     if (isFinite(a.number) && isFinite(b.number)) {
+       return Number(a.number) - Number(b.number);
+     } else {
+       return a.number > b.number;
+     }
+   });
 
   if (user) {
     res.status(200).render(view, {
@@ -41,6 +50,7 @@ module.exports.postSignUp = async (req, res) => {
       user_types,
       ...data,
       message: "Такий e-mail уже зареєстровано",
+      cafedras_list
     });
   } else if (password !== password2) {
     res.status(200).render(view, {
@@ -49,6 +59,7 @@ module.exports.postSignUp = async (req, res) => {
       user_types,
       ...data,
       message: "Паролі не співпадають",
+      cafedras_list
     });
   } else {
     const userData = {
